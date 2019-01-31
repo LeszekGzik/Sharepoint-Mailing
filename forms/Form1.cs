@@ -29,12 +29,14 @@ namespace Sharepoint_Mailing
         private void buttonCheck_Click(object sender, EventArgs e)
         {
             String errorString = "";
-            excelReader = new ExcelReader(textBoxFilePath.Text);
-            errorString += runCheckOnTab("SE16N_LOG");
-            errorString += runCheckOnTab("SM20");
-            errorString += runCheckOnTab("CDHDR_CDPOS");
-            errorString += runCheckOnTab("DBTABLOG");
-            errorString += ("\n" + excelReader.EmptyRowsTotal + "/" + excelReader.AllSheetsRowsTotal + " rows missing in total.");
+            foreach(DataGridViewRow row in dataGridView1.Rows)
+            {
+                DataGridViewCheckBoxCell chk = (DataGridViewCheckBoxCell)row.Cells[1];
+                if (chk.Value == chk.TrueValue)
+                {
+                    errorString += runCheckOnFile(textBoxFilePath.Text + "\\" + row.Cells[0].Value.ToString());
+                }
+            }
 
             if (checkBoxMail.Checked)
             {
@@ -47,12 +49,23 @@ namespace Sharepoint_Mailing
 
         private void buttonOpenFile_Click(object sender, EventArgs e)
         {
-            if(openFileDialog1.ShowDialog()==DialogResult.OK)
+            if(folderBrowserDialog1.ShowDialog()==DialogResult.OK)
             {
-                textBoxFilePath.Text = openFileDialog1.FileName;
+                textBoxFilePath.Text = folderBrowserDialog1.SelectedPath;
+                showFiles();
             }
         }
 
+        private void showFiles()
+        {
+            DirectoryInfo dir = new DirectoryInfo(textBoxFilePath.Text);
+            FileInfo[] files = dir.GetFiles("*.xls*");
+            foreach (FileInfo file in files)
+            {
+                dataGridView1.Rows.Add(file.Name);
+            }
+        }
+        
         private void buttonCheckAndRemind_Click(object sender, EventArgs e)
         {
             String errorString = "";
@@ -78,6 +91,20 @@ namespace Sharepoint_Mailing
 
             excelReader.close();
             mailReader.close();
+        }
+
+        public String runCheckOnFile(String filePath)
+        {
+            String errorString = "";
+            excelReader = new ExcelReader(filePath);
+            errorString += runCheckOnTab("SE16N_LOG");
+            errorString += runCheckOnTab("SM20");
+            errorString += runCheckOnTab("CDHDR_CDPOS");
+            errorString += runCheckOnTab("DBTABLOG");
+            errorString += ("\n" + excelReader.EmptyRowsTotal + "/" + excelReader.AllSheetsRowsTotal + " rows missing in total.");
+            excelReader.close();
+
+            return errorString;
         }
 
         //przeprowadza sprawdzenie na podanej zakładce; dopisuje liczbę znalezionych błędów do messageList
@@ -144,19 +171,19 @@ namespace Sharepoint_Mailing
 
             foreach (String user in errorList.Keys)
             {
-                errorString += ("User " + user + " has " + errorList[user] + " rows to fill in tab " + excelReader.SheetName + "\n");
+                errorString += ("User " + user + " has " + errorList[user] + " rows to fill in tab " + excelReader.SheetName + " in file " + excelReader.FileName + "\n");
             }
 
             errorList = excelReader.ErrorList2;
             foreach (String user in errorList.Keys)
             {
-                errorString += (user + "'s APPROVER has " + errorList[user] + " rows to fill in tab " + excelReader.SheetName + "\n");
+                errorString += (user + "'s APPROVER has " + errorList[user] + " rows to fill in tab " + excelReader.SheetName + " in file " + excelReader.FileName + "\n");
             }
 
             errorList = excelReader.ErrorList3;
             foreach (String user in errorList.Keys)
             {
-                errorString += (user + "'s KEY USER has " + errorList[user] + " rows to fill in tab " + excelReader.SheetName + "\n");
+                errorString += (user + "'s KEY USER has " + errorList[user] + " rows to fill in tab " + excelReader.SheetName + " in file " + excelReader.FileName + "\n");
             }
 
             return errorString;
@@ -191,6 +218,7 @@ namespace Sharepoint_Mailing
                     else if (node.Name.Equals("recentPath"))
                     {
                         textBoxFilePath.Text = node.InnerText;
+                        showFiles();
                     }
                     else if (node.Name.Equals("mailMe"))
                     {
@@ -204,6 +232,20 @@ namespace Sharepoint_Mailing
                         textBoxControllerEmail.Text = node.InnerText;
                     }
                 }
+            }
+        }
+
+        private void buttonCheckAll_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void checkBoxAll_CheckedChanged(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                DataGridViewCheckBoxCell cell = (DataGridViewCheckBoxCell)row.Cells[1];
+                cell.Value = checkBoxAll.Checked;
             }
         }
 
