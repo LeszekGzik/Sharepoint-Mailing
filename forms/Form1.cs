@@ -16,7 +16,8 @@ namespace Sharepoint_Mailing
     public partial class Form1 : Form
     {
         Dictionary<String, String> messageList1, messageList2, messageList3;
-        ExcelReader excelReader, mailReader;
+        ExcelReader excelReader;
+        MailReader mailReader;
         OutlookMailer outlookMailer;
 
         public Form1()
@@ -44,7 +45,6 @@ namespace Sharepoint_Mailing
             }
 
             MessageBox.Show(errorString, "Errors found");
-            excelReader.close();
         }
 
         private void buttonOpenFile_Click(object sender, EventArgs e)
@@ -56,10 +56,12 @@ namespace Sharepoint_Mailing
             }
         }
 
+        //wypełnia dataGridView plikami w wybranym folderze
         private void showFiles()
         {
             DirectoryInfo dir = new DirectoryInfo(textBoxFilePath.Text);
             FileInfo[] files = dir.GetFiles("*.xls*");
+            dataGridView1.Rows.Clear();
             foreach (FileInfo file in files)
             {
                 dataGridView1.Rows.Add(file.Name);
@@ -72,53 +74,79 @@ namespace Sharepoint_Mailing
             messageList1 = new Dictionary<string, string>();
             messageList2 = new Dictionary<string, string>();
             messageList3 = new Dictionary<string, string>();
-            excelReader = new ExcelReader(textBoxFilePath.Text);
-            mailReader = new ExcelReader(textBoxEmailPath.Text);
-            errorString += runCheckAndRemindOnTab("SE16N_LOG");
-            errorString += runCheckAndRemindOnTab("SM20");
-            errorString += runCheckAndRemindOnTab("CDHDR_CDPOS");
-            errorString += runCheckAndRemindOnTab("DBTABLOG");
-            errorString += ("\n" + excelReader.EmptyRowsTotal + "/" + excelReader.AllSheetsRowsTotal + " rows missing in total.");
-
-            outlookMailer.sendToAll("Reminder for file " + excelReader.FileName, mailReader.getMailingList1(messageList1));
-            outlookMailer.sendToAll("Reminder for file " + excelReader.FileName, mailReader.getMailingList23(messageList2));
-            outlookMailer.sendToAll("Reminder for file " + excelReader.FileName, mailReader.getMailingList23(messageList3));
+            mailReader = new MailReader(textBoxEmailPath.Text);
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                DataGridViewCheckBoxCell chk = (DataGridViewCheckBoxCell)row.Cells[1];
+                if (chk.Value == chk.TrueValue)
+                {
+                    errorString += runCheckAndRemindOnFile(textBoxFilePath.Text + "\\" + row.Cells[0].Value.ToString());
+                }
+            }
+            outlookMailer.sendToAll("ZSOX Sharepoint Reminder", mailReader.getMailingList1(messageList1));
+            outlookMailer.sendToAll("ZSOX Sharepoint Reminder", mailReader.getMailingList23(messageList2));
+            outlookMailer.sendToAll("ZSOX Sharepoint Reminder", mailReader.getMailingList23(messageList3));
 
             if (checkBoxMail.Checked)
             {
                 sendReport(errorString);
             }
 
-            excelReader.close();
             mailReader.close();
         }
 
+        //przeprowadza sprawdzenie wszystkich zakładek w pliku i wypełnia messageLists powiadomieniami; zwraca listę wszystkich błędów + podsumowanie w postaci stringa
+        private string runCheckAndRemindOnFile(string filePath)
+        {
+            Console.WriteLine("File check starting: " + filePath + "...");
+
+            String errorString = "";
+            excelReader = new ExcelReader(filePath);
+            errorString += runCheckAndRemindOnTab("SE16N_LOG");
+            errorString += runCheckAndRemindOnTab("SM20");
+            errorString += runCheckAndRemindOnTab("CDHDR_CDPOS");
+            errorString += runCheckAndRemindOnTab("DBTABLOG");
+            errorString += (excelReader.EmptyRowsTotal + "/" + excelReader.AllSheetsRowsTotal + " rows missing in total.\n\n");
+            excelReader.close();
+
+            Console.WriteLine("File check finished: " + filePath);
+
+            return errorString;
+        }
+
+        //przeprowadza sprawdzenie wszystkich zakładek w pliku; zwraca listę wszystkich błędów + podsumowanie w postaci stringa
         public String runCheckOnFile(String filePath)
         {
+            Console.WriteLine("File check starting: " + filePath + "...");
+
             String errorString = "";
             excelReader = new ExcelReader(filePath);
             errorString += runCheckOnTab("SE16N_LOG");
             errorString += runCheckOnTab("SM20");
             errorString += runCheckOnTab("CDHDR_CDPOS");
             errorString += runCheckOnTab("DBTABLOG");
-            errorString += ("\n" + excelReader.EmptyRowsTotal + "/" + excelReader.AllSheetsRowsTotal + " rows missing in total.");
+            errorString += (excelReader.EmptyRowsTotal + "/" + excelReader.AllSheetsRowsTotal + " rows missing in total.\n\n");
             excelReader.close();
+
+            Console.WriteLine("File check finished: " + filePath);
 
             return errorString;
         }
 
-        //przeprowadza sprawdzenie na podanej zakładce; dopisuje liczbę znalezionych błędów do messageList
+        //przeprowadza sprawdzenie na podanej zakładce; dopisuje liczbę znalezionych błędów do odpowiednich messageLists; oraz zwraca listę wszystkich błędów w postaci stringa
         public String runCheckAndRemindOnTab(String tab)
         {
+            Console.WriteLine("   Tab check starting: " + tab + "...");
+
+            String errorString = "";
             excelReader.openSheet(tab);
             excelReader.findMissingCells();
-            String errorString = "";
 
             //step1
             Dictionary<string, int> errorList = excelReader.ErrorList1;
             foreach (String user in errorList.Keys)
             {
-                errorString += ("User " + user + " has " + errorList[user] + " rows to fill in tab " + excelReader.SheetName + "\n");
+                errorString += ("User " + user + " has " + errorList[user] + " rows to fill in tab " + excelReader.SheetName + " in file " + excelReader.FileName + "\n");
                 if (messageList1.Keys.Contains(user))
                 {
                     messageList1[user] += ("You have " + errorList[user] + " rows left to fill in file " + excelReader.FileName + " in tab " + excelReader.SheetName + ".\n");
@@ -133,7 +161,7 @@ namespace Sharepoint_Mailing
             errorList = excelReader.ErrorList2;
             foreach (String user in errorList.Keys)
             {
-                errorString += (user + "'s APPROVER has " + errorList[user] + " rows to fill in tab " + excelReader.SheetName + "\n");
+                errorString += (user + "'s APPROVER has " + errorList[user] + " rows to fill in tab " + excelReader.SheetName + " in file " + excelReader.FileName + "\n");
                 if (messageList2.Keys.Contains(user))
                 {
                     messageList2[user] += ("You have " + errorList[user] + " rows left to fill in file " + excelReader.FileName + " in tab " + excelReader.SheetName + ".\n");
@@ -148,7 +176,7 @@ namespace Sharepoint_Mailing
             errorList = excelReader.ErrorList3;
             foreach (String user in errorList.Keys)
             {
-                errorString += (user + "'s KEY USER has " + errorList[user] + " rows to fill in tab " + excelReader.SheetName + "\n");
+                errorString += (user + "'s KEY USER has " + errorList[user] + " rows to fill in tab " + excelReader.SheetName + " in file " + excelReader.FileName + "\n");
                 if (messageList3.Keys.Contains(user))
                 {
                     messageList3[user] += ("A key user has " + errorList[user] + " rows left to fill in file " + excelReader.FileName + " in tab " + excelReader.SheetName + ".\n");
@@ -159,11 +187,16 @@ namespace Sharepoint_Mailing
                 }
             }
 
+            Console.WriteLine("   Tab check finished: " + tab);
+
             return errorString;
         }
 
+        //wykonuje pełne sprawdzenie jednej zakładki w obecnym pliku w ExcelReaderze; zwraca listę wszystkich błędów w postaci stringa
         public String runCheckOnTab(String tab)
         {
+            Console.WriteLine("   Tab check starting: " + tab + "...");
+
             excelReader.openSheet(tab);
             excelReader.findMissingCells();
             String errorString = "";
@@ -186,6 +219,8 @@ namespace Sharepoint_Mailing
                 errorString += (user + "'s KEY USER has " + errorList[user] + " rows to fill in tab " + excelReader.SheetName + " in file " + excelReader.FileName + "\n");
             }
 
+            Console.WriteLine("   Tab check finished: " + tab);
+
             return errorString;
         }
 
@@ -202,6 +237,7 @@ namespace Sharepoint_Mailing
             textBoxControllerEmail.Enabled = checkBoxMail.Checked;
         }
 
+        //wczytuje ostatnią konfigurację z config.xml, jeśli takowy istnieje
         private void loadConfig()
         {
             if (File.Exists("config.xml"))
@@ -235,11 +271,6 @@ namespace Sharepoint_Mailing
             }
         }
 
-        private void buttonCheckAll_Click(object sender, EventArgs e)
-        {
-            
-        }
-
         private void checkBoxAll_CheckedChanged(object sender, EventArgs e)
         {
             foreach (DataGridViewRow row in dataGridView1.Rows)
@@ -254,6 +285,7 @@ namespace Sharepoint_Mailing
             saveConfig();
         }
 
+        //zapisuje ostatnią konfigurację do config.xml
         private void saveConfig()
         {
             XmlDocument doc = new XmlDocument();
@@ -282,6 +314,7 @@ namespace Sharepoint_Mailing
             doc.Save("config.xml");
         }
 
+        //wysyła zbiorczy, kompletny raport na adres podany w textboksie
         private void sendReport(String message)
         {
             outlookMailer.sendMail("Check results from file " + excelReader.FileName, textBoxControllerEmail.Text, message);

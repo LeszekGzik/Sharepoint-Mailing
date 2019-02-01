@@ -187,8 +187,10 @@
             // 
             // ColumnCheckBox
             // 
+            this.ColumnCheckBox.FalseValue = "false";
             this.ColumnCheckBox.HeaderText = "Check";
             this.ColumnCheckBox.Name = "ColumnCheckBox";
+            this.ColumnCheckBox.TrueValue = "true";
             this.ColumnCheckBox.Width = 50;
             // 
             // Form1
