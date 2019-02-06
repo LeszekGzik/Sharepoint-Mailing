@@ -61,11 +61,10 @@ namespace Sharepoint_Mailing.model
         {
             Dictionary<String, String> mailingList = new Dictionary<string, string>();
             worksheet = workbook.Sheets[1];
-            Excel.Range column1 = worksheet.Columns[1];
 
             foreach (String user in messageList.Keys)
             {
-                int row = column1.Find(user).Row;
+                int row = worksheet.Columns[1].Find(user).Row;
                 String name = worksheet.Cells[5][row].Value.ToString();
                 String address = worksheet.Cells[6][row].Value.ToString();
                 mailingList.Add(

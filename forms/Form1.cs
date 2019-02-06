@@ -317,7 +317,7 @@ namespace Sharepoint_Mailing
         //wysyła zbiorczy, kompletny raport na adres podany w textboksie
         private void sendReport(String message)
         {
-            outlookMailer.sendMail("Check results from file " + excelReader.FileName, textBoxControllerEmail.Text, message);
+            outlookMailer.sendMail("ZSOX Sharepoint check results from day " + DateTime.Now.ToShortDateString(), textBoxControllerEmail.Text, message);
         }
     }
 }
