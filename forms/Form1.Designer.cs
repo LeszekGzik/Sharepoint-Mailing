@@ -42,10 +42,10 @@
             this.textBoxControllerEmail = new System.Windows.Forms.TextBox();
             this.checkBoxMail = new System.Windows.Forms.CheckBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.checkBoxAll = new System.Windows.Forms.CheckBox();
             this.ColumnFileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnCheckBox = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.checkBoxAll = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -167,17 +167,6 @@
             this.dataGridView1.Size = new System.Drawing.Size(410, 197);
             this.dataGridView1.TabIndex = 11;
             // 
-            // checkBoxAll
-            // 
-            this.checkBoxAll.AutoSize = true;
-            this.checkBoxAll.Location = new System.Drawing.Point(389, 281);
-            this.checkBoxAll.Name = "checkBoxAll";
-            this.checkBoxAll.Size = new System.Drawing.Size(70, 17);
-            this.checkBoxAll.TabIndex = 13;
-            this.checkBoxAll.Text = "Check all";
-            this.checkBoxAll.UseVisualStyleBackColor = true;
-            this.checkBoxAll.CheckedChanged += new System.EventHandler(this.checkBoxAll_CheckedChanged);
-            // 
             // ColumnFileName
             // 
             this.ColumnFileName.HeaderText = "File name";
@@ -192,6 +181,17 @@
             this.ColumnCheckBox.Name = "ColumnCheckBox";
             this.ColumnCheckBox.TrueValue = "true";
             this.ColumnCheckBox.Width = 50;
+            // 
+            // checkBoxAll
+            // 
+            this.checkBoxAll.AutoSize = true;
+            this.checkBoxAll.Location = new System.Drawing.Point(389, 281);
+            this.checkBoxAll.Name = "checkBoxAll";
+            this.checkBoxAll.Size = new System.Drawing.Size(70, 17);
+            this.checkBoxAll.TabIndex = 13;
+            this.checkBoxAll.Text = "Check all";
+            this.checkBoxAll.UseVisualStyleBackColor = true;
+            this.checkBoxAll.CheckedChanged += new System.EventHandler(this.checkBoxAll_CheckedChanged);
             // 
             // Form1
             // 
@@ -212,7 +212,7 @@
             this.Controls.Add(this.buttonOpenFile);
             this.Controls.Add(this.textBoxFilePath);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Sharepoint Mailing";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);

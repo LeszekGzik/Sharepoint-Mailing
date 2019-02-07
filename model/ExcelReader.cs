@@ -65,11 +65,10 @@ namespace Sharepoint_Mailing.model
         }
 
         //wyszukuje wszystkie brakujące wartości, po czym wypełnia błędami 3 listy zawarte w readerze (errorList1, 2 i 3), odpowiednio dla kroków 1-3
-        public void findMissingCells()
+        public UserList findMissingCells()
         {
-            ErrorList1 = new Dictionary<string, int>();
-            ErrorList2 = new Dictionary<string, int>();
-            ErrorList3 = new Dictionary<string, int>();
+
+            UserList users = new UserList();
 
             Excel.Range range = worksheet.Cells.Find("Incident Number");
             int incidentColumn = range.Column;
@@ -151,209 +150,28 @@ namespace Sharepoint_Mailing.model
                 //tworzenie listy
                 if (error1)
                 {
-                    EmptyRowsTotal++;
                     cell = worksheet.Cells[userColumn][i];
                     String userName = cell.Value.ToString();
-                    if (ErrorList1.Keys.Contains(userName))
-                    {
-                        ErrorList1[userName]++;
-                    }
-                    else
-                    {
-                        ErrorList1.Add(userName, 1);
-                    }
+                    users.add(userName, "Consultant");
+                    users.addError(userName, fileName, sheetName);
                 }
                 else if (error2)
                 {
-                    EmptyRowsTotal++;
                     cell = worksheet.Cells[userColumn][i];
-                    String userName = cell.Value.ToString();
-                    if (ErrorList2.Keys.Contains(userName))
-                    {
-                        ErrorList2[userName]++;
-                    }
-                    else
-                    {
-                        ErrorList2.Add(userName, 1);
-                    }
+                    String userName = "@" + cell.Value.ToString();
+                    users.add(userName, "Approver");
+                    users.addError(userName, fileName, sheetName);
                 }
                 else if (error3)
                 {
-                    EmptyRowsTotal++;
                     cell = worksheet.Cells[userColumn][i];
-                    String userName = cell.Value.ToString();
-                    if (ErrorList3.Keys.Contains(userName))
-                    {
-                        ErrorList3[userName]++;
-                    }
-                    else
-                    {
-                        ErrorList3.Add(userName, 1);
-                    }
-                }
-            }
-        }
-
-        //wyszukuje brakujące wartości z kolumn Incident Number i Comments, po czym zwraca je w postaci listy <User, liczba błędów>
-        public Dictionary<String,int> findMissingStep1()
-        {
-            Dictionary<String, int> errorList = new Dictionary<string, int>();
-
-            Excel.Range range = worksheet.Cells.Find("Incident Number");
-            int incidentColumn = range.Column;
-            int row = range.Row;
-
-            range = worksheet.Rows[row].Find("Comments");
-            int commentsColumn = range.Column;
-
-            range = worksheet.Rows[row].Find("User");
-            int userColumn = range.Column;
-
-            for (int i = row+1; i < RowsTotal; i++)
-            {
-                bool error1 = false;
-
-                //step1
-                Excel.Range cell = worksheet.Cells[incidentColumn][i];
-                if(cell.Value==null||cell.Value.ToString().Equals(""))
-                {
-                    error1 = true;
-                }
-                else
-                {
-                    cell = worksheet.Cells[commentsColumn][i];
-                    if (cell.Value == null||cell.Value.ToString().Equals(""))
-                    {
-                        error1 = true;
-                    }
-                }
-
-
-                //tworzenie listy
-                if (error1)
-                {
-                    cell = worksheet.Cells[userColumn][i];
-                    String userName = cell.Value.ToString();
-                    if (errorList.Keys.Contains(userName))
-                    {
-                        errorList[userName]++;
-                    }
-                    else
-                    {
-                        errorList.Add(userName, 1);
-                    }
+                    String userName = "@" + cell.Value.ToString();
+                    users.add(userName, "Approver");
+                    users.addError(userName, fileName, sheetName);
                 }
             }
 
-            return errorList;
-        }
-
-        //wyszukuje brakujące wartości z kolumn Approver i Comment, po czym zwraca je w postaci listy <User, liczba błędów>
-        public Dictionary<String, int> findMissingStep2()
-        {
-            Dictionary<String, int> errorList = new Dictionary<string, int>();
-
-            Excel.Range range = worksheet.Cells.Find("Approver");
-            int approverColumn = range.Column;
-            int row = range.Row;
-
-            range = worksheet.Rows[row].Find("Comment")[2];
-            int commentColumn = range.Column;
-
-            range = worksheet.Rows[row].Find("User");
-            int userColumn = range.Column;
-
-            for (int i = row + 1; i < RowsTotal; i++)
-            {
-                bool error2 = false;
-
-                //step2
-                Excel.Range cell = worksheet.Cells[approverColumn][i];
-                if (cell.Value == null || cell.Value.ToString().Equals(""))
-                {
-                    error2 = true;
-                }
-                else
-                {
-                    cell = worksheet.Cells[commentColumn][i];
-                    if (cell.Value == null || cell.Value.ToString().Equals(""))
-                    {
-                        error2 = true;
-                    }
-                }
-
-
-                //tworzenie listy
-                if (error2)
-                {
-                    cell = worksheet.Cells[userColumn][i];
-                    String userName = cell.Value.ToString();
-                    if (errorList.Keys.Contains(userName))
-                    {
-                        errorList[userName]++;
-                    }
-                    else
-                    {
-                        errorList.Add(userName, 1);
-                    }
-                }
-            }
-
-            return errorList;
-        }
-
-        //wyszukuje brakujące wartości z kolumn Key User Approval i Approval in incident, po czym zwraca je w postaci listy <User, liczba błędów>
-        public Dictionary<String, int> findMissingStep3()
-        {
-            Dictionary<String, int> errorList = new Dictionary<string, int>();
-
-            Excel.Range range = worksheet.Cells.Find("Key User Approval");
-            int keyUserColumn = range.Column;
-            int row = range.Row;
-
-            range = worksheet.Rows[row].Find("Approval in incident");
-            int approvalColumn = range.Column;
-
-            range = worksheet.Rows[row].Find("User");
-            int userColumn = range.Column;
-
-            for (int i = row + 1; i < RowsTotal; i++)
-            {
-                bool error3 = false;
-
-                //step3
-                Excel.Range cell = worksheet.Cells[keyUserColumn][i];
-                if (cell.Value == null || cell.Value.ToString().Equals(""))
-                {
-                    error3 = true;
-                }
-                else
-                {
-                    cell = worksheet.Cells[approvalColumn][i];
-                    if (cell.Value == null || cell.Value.ToString().Equals(""))
-                    {
-                        error3 = true;
-                    }
-                }
-
-
-                //tworzenie listy
-                if (error3)
-                {
-                    cell = worksheet.Cells[userColumn][i];
-                    String userName = cell.Value.ToString();
-                    if (errorList.Keys.Contains(userName))
-                    {
-                        errorList[userName]++;
-                    }
-                    else
-                    {
-                        errorList.Add(userName, 1);
-                    }
-                }
-            }
-
-            return errorList;
+            return users;
         }
     }
 }

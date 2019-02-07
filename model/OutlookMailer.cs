@@ -18,15 +18,15 @@ namespace Sharepoint_Mailing.model
         }
 
         //rozsyła wszystkie maile podane w argumencie w postaci listy <adres, wiadomość>
-        public void sendToAll(String subject, Dictionary<String, String> mailingList)
+        public void sendToAll(String subject, UserList userList)
         {
             Outlook.MailItem mailItem;
-            foreach (String address in mailingList.Keys)
+            foreach (String userName in userList.Items.Keys)
             {
                 mailItem = app.CreateItem(Outlook.OlItemType.olMailItem);
                 mailItem.Subject = subject;
-                mailItem.To = address;
-                mailItem.Body = mailingList[address];
+                mailItem.To = userList.get(userName).Address;
+                mailItem.Body = userList.getErrorString(userName);
                 mailItem.BodyFormat = Outlook.OlBodyFormat.olFormatRichText;
                 mailItem.Display(false);
                 mailItem.Send();

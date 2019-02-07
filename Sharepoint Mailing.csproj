@@ -67,10 +67,14 @@
     <Compile Include="forms\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="model\Error.cs" />
+    <Compile Include="model\ErrorList.cs" />
     <Compile Include="model\ExcelReader.cs" />
     <Compile Include="model\MailReader.cs" />
     <Compile Include="model\OutlookMailer.cs" />
     <Compile Include="model\SharepointReader.cs" />
+    <Compile Include="model\User.cs" />
+    <Compile Include="model\UserList.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="forms\Form1.resx">

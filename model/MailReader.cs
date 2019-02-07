@@ -23,6 +23,7 @@ namespace Sharepoint_Mailing.model
             FileName = filePath.Substring(filePath.LastIndexOf("\\") + 1);
             app = new Excel.Application();
             workbook = app.Workbooks.Open(filePath);
+            worksheet = workbook.Sheets[1];
         }
 
         //zamyka plik excelowy
@@ -31,66 +32,32 @@ namespace Sharepoint_Mailing.model
             workbook.Close();
         }
 
-        //przyjmuje listę <user, tekst wiadomości> i zwraca <adres, wiadomość>
-        public Dictionary<String, String> getMailingList1(Dictionary<String, String> messageList)
+        public String getFullName(String userName)
         {
-            Dictionary<String, String> mailingList = new Dictionary<string, string>();
-            worksheet = workbook.Sheets[1];
-            Excel.Range column1 = worksheet.Columns[1];
-
-            foreach (String user in messageList.Keys)
-            {
-                int row = column1.Find(user).Row;
-                String name = worksheet.Cells[2][row].Value.ToString();
-                String address = worksheet.Cells[3][row].Value.ToString();
-                mailingList.Add(
-                    address,
-                    "Dear " +
-                    name +
-                    ",\n\n" +
-                    messageList[user] +
-                    "\n" +
-                    "Thank you for your cooperation.");
-            }
-
-            return mailingList;
+            Excel.Range userColumn = worksheet.Columns[1];
+            int row = userColumn.Find(userName).Row;
+            return worksheet.Cells[2][row].Value.ToString();
         }
 
-        //przyjmuje listę <user, tekst wiadomości> i zwraca <adres approvera, wiadomość do approvera>
-        public Dictionary<String, String> getMailingList23(Dictionary<String, String> messageList)
+        public String getAddress(String userName)
         {
-            Dictionary<String, String> mailingList = new Dictionary<string, string>();
-            worksheet = workbook.Sheets[1];
+            Excel.Range userColumn = worksheet.Columns[1];
+            int row = userColumn.Find(userName).Row;
+            return worksheet.Cells[3][row].Value.ToString();
+        }
 
-            foreach (String user in messageList.Keys)
-            {
-                int row = worksheet.Columns[1].Find(user).Row;
-                String name = worksheet.Cells[5][row].Value.ToString();
-                String address = worksheet.Cells[6][row].Value.ToString();
-                if(mailingList.Keys.Contains(address))
-                {
-                    mailingList[address] += ("\n" + messageList[user]);
-                }
-                else
-                {
-                    mailingList.Add(
-                        address, 
-                        "Dear " + 
-                        name + 
-                        ",\n\n" + 
-                        messageList[user]);
-                }
-            }
+        public String getLeadName(String userName)
+        {
+            Excel.Range userColumn = worksheet.Columns[1];
+            int row = userColumn.Find(userName).Row;
+            return worksheet.Cells[5][row].Value.ToString();
+        }
 
-            List<String> addresses = mailingList.Keys.ToList();
-
-
-            foreach (String address in addresses)
-            {
-                mailingList[address] += "\nThank you for your cooperation.";
-            }
-
-            return mailingList;
+        public String getLeadAddress(String userName)
+        {
+            Excel.Range userColumn = worksheet.Columns[1];
+            int row = userColumn.Find(userName).Row;
+            return worksheet.Cells[6][row].Value.ToString();
         }
     }
 }
