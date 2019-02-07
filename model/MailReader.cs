@@ -67,14 +67,27 @@ namespace Sharepoint_Mailing.model
                 int row = worksheet.Columns[1].Find(user).Row;
                 String name = worksheet.Cells[5][row].Value.ToString();
                 String address = worksheet.Cells[6][row].Value.ToString();
-                mailingList.Add(
-                    address,
-                    "Dear " +
-                    name +
-                    ",\n\n" +
-                    messageList[user] +
-                    "\n" +
-                    "Thank you for your cooperation.");
+                if(mailingList.Keys.Contains(address))
+                {
+                    mailingList[address] += ("\n" + messageList[user]);
+                }
+                else
+                {
+                    mailingList.Add(
+                        address, 
+                        "Dear " + 
+                        name + 
+                        ",\n\n" + 
+                        messageList[user]);
+                }
+            }
+
+            List<String> addresses = mailingList.Keys.ToList();
+
+
+            foreach (String address in addresses)
+            {
+                mailingList[address] += "\nThank you for your cooperation.";
             }
 
             return mailingList;

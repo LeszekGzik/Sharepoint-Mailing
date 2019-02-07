@@ -15,7 +15,7 @@ namespace Sharepoint_Mailing
 {
     public partial class Form1 : Form
     {
-        Dictionary<String, String> messageList1, messageList2, messageList3;
+        Dictionary<String, String> messageList1, messageList23;
         ExcelReader excelReader;
         MailReader mailReader;
         OutlookMailer outlookMailer;
@@ -72,8 +72,7 @@ namespace Sharepoint_Mailing
         {
             String errorString = "";
             messageList1 = new Dictionary<string, string>();
-            messageList2 = new Dictionary<string, string>();
-            messageList3 = new Dictionary<string, string>();
+            messageList23 = new Dictionary<string, string>();
             mailReader = new MailReader(textBoxEmailPath.Text);
             foreach (DataGridViewRow row in dataGridView1.Rows)
             {
@@ -84,8 +83,7 @@ namespace Sharepoint_Mailing
                 }
             }
             outlookMailer.sendToAll("ZSOX Sharepoint Reminder", mailReader.getMailingList1(messageList1));
-            outlookMailer.sendToAll("ZSOX Sharepoint Reminder", mailReader.getMailingList23(messageList2));
-            outlookMailer.sendToAll("ZSOX Sharepoint Reminder", mailReader.getMailingList23(messageList3));
+            outlookMailer.sendToAll("ZSOX Sharepoint Reminder", mailReader.getMailingList23(messageList23));
 
             if (checkBoxMail.Checked)
             {
@@ -162,13 +160,13 @@ namespace Sharepoint_Mailing
             foreach (String user in errorList.Keys)
             {
                 errorString += (user + "'s APPROVER has " + errorList[user] + " rows to fill in tab " + excelReader.SheetName + " in file " + excelReader.FileName + "\n");
-                if (messageList2.Keys.Contains(user))
+                if (messageList23.Keys.Contains(user))
                 {
-                    messageList2[user] += ("You have " + errorList[user] + " rows left to fill in file " + excelReader.FileName + " in tab " + excelReader.SheetName + ".\n");
+                    messageList23[user] += ("You have " + errorList[user] + " rows left to fill in file " + excelReader.FileName + " in tab " + excelReader.SheetName + ".\n");
                 }
                 else
                 {
-                    messageList2.Add(user, "You have " + errorList[user] + " rows left to fill in file " + excelReader.FileName + " in tab " + excelReader.SheetName + ".\n");
+                    messageList23.Add(user, "You have " + errorList[user] + " rows left to fill in file " + excelReader.FileName + " in tab " + excelReader.SheetName + ".\n");
                 }
             }
 
@@ -177,13 +175,13 @@ namespace Sharepoint_Mailing
             foreach (String user in errorList.Keys)
             {
                 errorString += (user + "'s KEY USER has " + errorList[user] + " rows to fill in tab " + excelReader.SheetName + " in file " + excelReader.FileName + "\n");
-                if (messageList3.Keys.Contains(user))
+                if (messageList23.Keys.Contains(user))
                 {
-                    messageList3[user] += ("A key user has " + errorList[user] + " rows left to fill in file " + excelReader.FileName + " in tab " + excelReader.SheetName + ".\n");
+                    messageList23[user] += ("A key user has " + errorList[user] + " rows left to fill in file " + excelReader.FileName + " in tab " + excelReader.SheetName + ".\n");
                 }
                 else
                 {
-                    messageList3.Add(user, "A key user has " + errorList[user] + " rows left to fill in file " + excelReader.FileName + " in tab " + excelReader.SheetName + ".\n");
+                    messageList23.Add(user, "A key user has " + errorList[user] + " rows left to fill in file " + excelReader.FileName + " in tab " + excelReader.SheetName + ".\n");
                 }
             }
 
