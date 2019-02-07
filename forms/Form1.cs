@@ -15,7 +15,6 @@ namespace Sharepoint_Mailing
 {
     public partial class Form1 : Form
     {
-        Dictionary<String, String> messageList1, messageList23;
         ExcelReader excelReader;
         MailReader mailReader;
         OutlookMailer outlookMailer;
@@ -156,8 +155,11 @@ namespace Sharepoint_Mailing
                     }
                     else if (node.Name.Equals("recentPath"))
                     {
-                        textBoxFilePath.Text = node.InnerText;
-                        showFiles();
+                        if (!node.InnerText.Equals(""))
+                        {
+                            textBoxFilePath.Text = node.InnerText;
+                            showFiles();
+                        }
                     }
                     else if (node.Name.Equals("mailMe"))
                     {
