@@ -92,24 +92,28 @@ namespace Sharepoint_Mailing.model
             range = worksheet.Rows[row].Find("Approval in incident");
             int approvalColumn = range.Column;
 
+            range = worksheet.Rows[row].Find("Date");
+            int dateColumn = range.Column;
+
             for (int i = row + 1; i < RowsTotal; i++)
             {
-                bool error1 = false;
-                bool error2 = false;
-                bool error3 = false;
+                bool error = false;
+                String column = "";
 
                 //step1
                 Excel.Range cell = worksheet.Cells[incidentColumn][i];
                 if (cell.Value == null || cell.Value.ToString().Equals(""))
                 {
-                    error1 = true;
+                    error = true;
+                    column = "Incident Number";
                 }
                 else
                 {
                     cell = worksheet.Cells[commentsColumn][i];
                     if (cell.Value == null || cell.Value.ToString().Equals(""))
                     {
-                        error1 = true;
+                        error = true;
+                        column = "Comments";
                     }
                     else
                     {
@@ -117,14 +121,16 @@ namespace Sharepoint_Mailing.model
                         cell = worksheet.Cells[approverColumn][i];
                         if (cell.Value == null || cell.Value.ToString().Equals(""))
                         {
-                            error2 = true;
+                            error = true;
+                            column = "Approver";
                         }
                         else
                         {
                             cell = worksheet.Cells[commentColumn][i];
                             if (cell.Value == null || cell.Value.ToString().Equals(""))
                             {
-                                error2 = true;
+                                error = true;
+                                column = "Comment";
                             }
                             else
                             {
@@ -132,14 +138,16 @@ namespace Sharepoint_Mailing.model
                                 cell = worksheet.Cells[keyUserColumn][i];
                                 if (cell.Value == null || cell.Value.ToString().Equals(""))
                                 {
-                                    error3 = true;
+                                    error = true;
+                                    column = "Key User Approval/Comment";
                                 }
                                 else
                                 {
                                     cell = worksheet.Cells[approvalColumn][i];
                                     if (cell.Value == null || cell.Value.ToString().Equals(""))
                                     {
-                                        error3 = true;
+                                        error = true;
+                                        column = "Approval in incident (Yes/No)";
                                     }
                                 }
                             }
@@ -148,26 +156,14 @@ namespace Sharepoint_Mailing.model
                 }
 
                 //tworzenie listy
-                if (error1)
+                if (error)
                 {
                     cell = worksheet.Cells[userColumn][i];
                     String userName = cell.Value.ToString();
+                    cell = worksheet.Cells[dateColumn][i];
+                    String date = cell.Value.ToString();
                     users.add(userName, "Consultant");
-                    users.addError(userName, fileName, sheetName);
-                }
-                else if (error2)
-                {
-                    cell = worksheet.Cells[userColumn][i];
-                    String userName = "@" + cell.Value.ToString();
-                    users.add(userName, "Approver");
-                    users.addError(userName, fileName, sheetName);
-                }
-                else if (error3)
-                {
-                    cell = worksheet.Cells[userColumn][i];
-                    String userName = "@" + cell.Value.ToString();
-                    users.add(userName, "Approver");
-                    users.addError(userName, fileName, sheetName);
+                    users.addError(userName, fileName, sheetName, column, date);
                 }
             }
 

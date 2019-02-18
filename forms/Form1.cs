@@ -1,4 +1,5 @@
-﻿using Sharepoint_Mailing.model;
+﻿using Sharepoint_Mailing.IO;
+using Sharepoint_Mailing.model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -224,6 +225,13 @@ namespace Sharepoint_Mailing
             configNode.AppendChild(childNode);
 
             doc.Save("config.xml");
+        }
+
+        private void buttonDebug_Click(object sender, EventArgs e)
+        {
+            ExcelWriter writer = new ExcelWriter("temptemptemp.xlsx");
+            writer.writeHeaders();
+            writer.save();
         }
 
         //wysyła zbiorczy, kompletny raport na adres podany w textboksie

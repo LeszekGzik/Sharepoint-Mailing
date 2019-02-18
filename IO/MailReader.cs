@@ -46,6 +46,13 @@ namespace Sharepoint_Mailing.model
             return worksheet.Cells[3][row].Value.ToString();
         }
 
+        public String getStream(String userName)
+        {
+            Excel.Range userColumn = worksheet.Columns[1];
+            int row = userColumn.Find(userName).Row;
+            return worksheet.Cells[4][row].Value.ToString();
+        }
+
         public String getLeadName(String userName)
         {
             Excel.Range userColumn = worksheet.Columns[1];

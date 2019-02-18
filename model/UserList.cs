@@ -47,9 +47,9 @@ namespace Sharepoint_Mailing.model
             return Items[name];
         }
 
-        public void addError(String name, String file, String tab)
+        public void addError(String name, String file, String tab, String column, String date)
         {
-            Items[name].addError(file, tab);
+            Items[name].addError(file, tab, column, date);
         }
 
         public UserList sum(UserList anotherList)
@@ -89,16 +89,7 @@ namespace Sharepoint_Mailing.model
         {
             foreach(String userName in Items.Keys)
             {
-                //to jest approver
-                if(userName[0].Equals('@'))
-                {
-                    get(userName).FullName = reader.getLeadName(userName.Substring(1));
-                }
-                //to jest zwykły gość
-                else
-                {
-                    get(userName).FullName = reader.getFullName(userName);
-                }
+                get(userName).FullName = reader.getFullName(userName);
             }
         }
 
@@ -106,16 +97,10 @@ namespace Sharepoint_Mailing.model
         {
             foreach (String userName in Items.Keys)
             {
-                //to jest approver
-                if (userName[0].Equals('@'))
-                {
-                    get(userName).Address = reader.getLeadAddress(userName.Substring(1));
-                }
-                //to jest zwykły gość
-                else
-                {
-                    get(userName).Address = reader.getAddress(userName);
-                }
+                get(userName).Address = reader.getAddress(userName);
+                get(userName).Stream = reader.getStream(userName);
+                get(userName).StreamLeadName = reader.getLeadName(userName);
+                get(userName).StreamLeadAddress = reader.getLeadAddress(userName);
             }
         }
 

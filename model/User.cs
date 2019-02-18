@@ -14,6 +14,10 @@ namespace Sharepoint_Mailing.model
         ErrorList errors;
         int totalRows;
         String fullName;
+        String stream;
+        String streamLeadName;
+        String streamLeadAddress;
+
 
         public string Name { get => name; set => name = value; }
         public string Address { get => address; set => address = value; }
@@ -21,6 +25,9 @@ namespace Sharepoint_Mailing.model
         public ErrorList Errors { get => errors; set => errors = value; }
         public int TotalRows { get => totalRows; set => totalRows = value; }
         public string FullName { get => fullName; set => fullName = value; }
+        public string Stream { get => stream; set => stream = value; }
+        public string StreamLeadName { get => streamLeadName; set => streamLeadName = value; }
+        public string StreamLeadAddress { get => streamLeadAddress; set => streamLeadAddress = value; }
 
         public User()
         {
@@ -36,9 +43,9 @@ namespace Sharepoint_Mailing.model
             TotalRows = 0;
         }
 
-        public void addError(String file, String tab)
+        public void addError(String file, String tab, String column, String date)
         {
-            Errors.addError(file, tab);
+            Errors.addError(file, tab, column, date);
         }
 
         public void addError(Error error)
@@ -70,7 +77,8 @@ namespace Sharepoint_Mailing.model
             foreach(String key in getErrorKeys())
             {
                 Error e = getError(key);
-                errorString += ("User " + FullName + " has " + e.Count + " rows to fill in tab " + e.Tab + " in file " + e.File + ".\n");
+                errorString += ("User " + FullName + " has " + e.Count + " rows to fill in column " + e.Column + " in tab " + e.Tab + " in file " + e.File + ".\n");
+
             }
             return errorString;
         }

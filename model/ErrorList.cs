@@ -22,35 +22,35 @@ namespace Sharepoint_Mailing.model
             return Items[key];
         }
 
-        public void addError(String file, String tab)
+        public void addError(String file, String tab, String column, String date)
         {
-            String key = file + ";" + tab;
+            String key = file + ";" + tab + ";" + column;
             if(Items.Keys.Contains(key))
             {
                 Items[key].increment(1);
             }
             else
             {
-                Items.Add(key, new Error(file, tab));
+                Items.Add(key, new Error(file, tab, column, date));
             }
         }
 
-        public void addErrors(String file, String tab, int count)
+        public void addErrors(String file, String tab, String column, String date, int count)
         {
-            String key = file + ";" + tab;
+            String key = file + ";" + tab + ";" + column;
             if (Items.Keys.Contains(key))
             {
                 Items[key].increment(count);
             }
             else
             {
-                Items.Add(key, new Error(file, tab));
+                Items.Add(key, new Error(file, tab, column, date, count));
             }
         }
 
         public void addError(Error _err)
         {
-            addErrors(_err.File, _err.Tab, _err.Count);
+            addErrors(_err.File, _err.Tab, _err.Column, _err.Date, _err.Count);
         }
     }
 }
