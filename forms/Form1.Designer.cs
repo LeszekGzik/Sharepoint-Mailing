@@ -46,7 +46,11 @@
             this.ColumnCheckBox = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.checkBoxAll = new System.Windows.Forms.CheckBox();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.statusLabelFiles = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusLabelTabs = new System.Windows.Forms.ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBoxFilePath
@@ -193,11 +197,36 @@
             this.checkBoxAll.UseVisualStyleBackColor = true;
             this.checkBoxAll.CheckedChanged += new System.EventHandler(this.checkBoxAll_CheckedChanged);
             // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.statusLabelFiles,
+            this.statusLabelTabs});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 528);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(477, 22);
+            this.statusStrip1.TabIndex = 14;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // statusLabelFiles
+            // 
+            this.statusLabelFiles.Name = "statusLabelFiles";
+            this.statusLabelFiles.Size = new System.Drawing.Size(83, 17);
+            this.statusLabelFiles.Text = "Files done: 0/0";
+            // 
+            // statusLabelTabs
+            // 
+            this.statusLabelTabs.Name = "statusLabelTabs";
+            this.statusLabelTabs.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.statusLabelTabs.Size = new System.Drawing.Size(85, 17);
+            this.statusLabelTabs.Text = "Tabs done: 0/0";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(477, 550);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.checkBoxAll);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.checkBoxMail);
@@ -215,6 +244,8 @@
             this.Text = "Sharepoint Mailing";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -239,6 +270,9 @@
         private System.Windows.Forms.CheckBox checkBoxAll;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnFileName;
         private System.Windows.Forms.DataGridViewCheckBoxColumn ColumnCheckBox;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel statusLabelFiles;
+        private System.Windows.Forms.ToolStripStatusLabel statusLabelTabs;
     }
 }
 

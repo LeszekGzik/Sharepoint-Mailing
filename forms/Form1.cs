@@ -18,6 +18,7 @@ namespace Sharepoint_Mailing
         ExcelReader excelReader;
         MailReader mailReader;
         OutlookMailer outlookMailer;
+        int sumOfFiles, sumOfTabs, doneFiles, doneTabs;
 
         public Form1()
         {
@@ -28,6 +29,7 @@ namespace Sharepoint_Mailing
 
         private void buttonCheck_Click(object sender, EventArgs e)
         {
+            setUpStatusStrip();
             mailReader = new MailReader(textBoxEmailPath.Text);
             UserList userList = new UserList();
             foreach(DataGridViewRow row in dataGridView1.Rows)
@@ -63,7 +65,7 @@ namespace Sharepoint_Mailing
         private void showFiles()
         {
             DirectoryInfo dir = new DirectoryInfo(textBoxFilePath.Text);
-            FileInfo[] files = dir.GetFiles("*.xls*");
+            FileInfo[] files = dir.GetFiles("*.xls*", SearchOption.AllDirectories);
             dataGridView1.Rows.Clear();
             foreach (FileInfo file in files)
             {
@@ -73,6 +75,7 @@ namespace Sharepoint_Mailing
         
         private void buttonCheckAndRemind_Click(object sender, EventArgs e)
         {
+            setUpStatusStrip();
             mailReader = new MailReader(textBoxEmailPath.Text);
             UserList userList = new UserList();
             foreach (DataGridViewRow row in dataGridView1.Rows)
@@ -109,6 +112,8 @@ namespace Sharepoint_Mailing
             users = users.sum(runCheckOnTab("CDHDR_CDPOS"));
             users = users.sum(runCheckOnTab("DBTABLOG"));
             excelReader.close();
+            doneFiles++;
+            updateStatusStrip();
 
             Console.WriteLine("File check finished: " + filePath);
 
@@ -122,6 +127,8 @@ namespace Sharepoint_Mailing
             excelReader.openSheet(tab);
             UserList userList = excelReader.findMissingCells();
             Console.WriteLine("   Tab check finished: " + tab);
+            doneTabs++;
+            updateStatusStrip();
 
             return userList;
         }
@@ -223,6 +230,29 @@ namespace Sharepoint_Mailing
         private void sendReport(String message)
         {
             outlookMailer.sendMail("ZSOX Sharepoint check results from day " + DateTime.Now.ToShortDateString(), textBoxControllerEmail.Text, message);
+        }
+
+        private void setUpStatusStrip()
+        {
+            sumOfFiles = 0;
+            sumOfTabs = 0;
+            doneFiles = 0;
+            doneTabs = 0;
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                DataGridViewCheckBoxCell chk = (DataGridViewCheckBoxCell)row.Cells[1];
+                if (chk.Value == chk.TrueValue)
+                {
+                    sumOfFiles += 1;
+                    sumOfTabs += 4;
+                }
+            }
+        }
+
+        private void updateStatusStrip()
+        {
+            statusLabelFiles.Text = "Files done: " + doneFiles + "/" + sumOfFiles;
+            statusLabelTabs.Text = "Tabs done: " + doneTabs + "/" + sumOfTabs;
         }
     }
 }
