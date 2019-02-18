@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sharepoint_Mailing.model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,9 @@ namespace Sharepoint_Mailing.IO
         protected Excel.Application app;
         protected Excel.Workbook workbook;
         protected Excel._Worksheet worksheet;
+        int row;
+
+        public int Row { get => row; set => row = value; }
 
         public ExcelWriter(String fileName)
         {
@@ -47,6 +51,54 @@ namespace Sharepoint_Mailing.IO
             worksheet.Cells[2, 13] = "Stream";
             worksheet.Cells[2, 14] = "Stream Lead Name";
             worksheet.Cells[2, 15] = "Stream Lead E-Mail Address";
+            Row = 3;
+        }
+
+        public void writeErrors(User user)
+        {
+            foreach(String key in user.getErrorKeys())
+            {
+                Error err = user.getError(key);
+                worksheet.Cells[Row, 1] = err.Date;
+                worksheet.Cells[Row, 2] = err.File;
+                worksheet.Cells[Row, 3] = user.Name;
+                worksheet.Cells[Row, 4] = user.FullName;
+                worksheet.Cells[Row, 5] = user.Address;
+                worksheet.Cells[Row, 6] = err.Tab;
+                switch(err.Column)
+                {
+                    case "Incident Number":
+                        worksheet.Cells[Row, 7] = err.Count;
+                        break;
+                    case "Comments":
+                        worksheet.Cells[Row, 8] = err.Count;
+                        break;
+                    case "Approver":
+                        worksheet.Cells[Row, 9] = err.Count;
+                        break;
+                    case "Comment":
+                        worksheet.Cells[Row, 10] = err.Count;
+                        break;
+                    case "Key User Approval/Comment":
+                        worksheet.Cells[Row, 11] = err.Count;
+                        break;
+                    case "Approval in incident (Yes/No)":
+                        worksheet.Cells[Row, 12] = err.Count;
+                        break;
+                }
+                worksheet.Cells[Row, 13] = user.Stream;
+                worksheet.Cells[Row, 14] = user.StreamLeadName;
+                worksheet.Cells[Row, 15] = user.StreamLeadAddress;
+                Row++;
+            }
+        }
+
+        public void writeErrors(UserList users)
+        {
+            foreach(String userName in users.getKeys())
+            {
+                writeErrors(users.get(userName));
+            }
         }
 
         public void save()

@@ -17,6 +17,11 @@ namespace Sharepoint_Mailing.model
             Items = new Dictionary<String, User>();
         }
 
+        public List<String> getKeys()
+        {
+            return Items.Keys.ToList();
+        }
+
         public void add(String name)
         {
             if (!Items.Keys.Contains(name)) {

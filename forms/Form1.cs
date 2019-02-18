@@ -45,6 +45,11 @@ namespace Sharepoint_Mailing
             userList = userList.mergeExcessUsers();
             String errorString = userList.getErrorString();
 
+            ExcelWriter writer = new ExcelWriter("temptemptemp.xlsx");
+            writer.writeHeaders();
+            writer.writeErrors(userList);
+            writer.save();
+
             if (checkBoxMail.Checked)
             {
                 sendReport(errorString);
@@ -225,13 +230,6 @@ namespace Sharepoint_Mailing
             configNode.AppendChild(childNode);
 
             doc.Save("config.xml");
-        }
-
-        private void buttonDebug_Click(object sender, EventArgs e)
-        {
-            ExcelWriter writer = new ExcelWriter("temptemptemp.xlsx");
-            writer.writeHeaders();
-            writer.save();
         }
 
         //wysyła zbiorczy, kompletny raport na adres podany w textboksie

@@ -49,7 +49,6 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.statusLabelFiles = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusLabelTabs = new System.Windows.Forms.ToolStripStatusLabel();
-            this.buttonDebug = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -222,22 +221,11 @@
             this.statusLabelTabs.Size = new System.Drawing.Size(85, 17);
             this.statusLabelTabs.Text = "Tabs done: 0/0";
             // 
-            // buttonDebug
-            // 
-            this.buttonDebug.Location = new System.Drawing.Point(12, 290);
-            this.buttonDebug.Name = "buttonDebug";
-            this.buttonDebug.Size = new System.Drawing.Size(75, 23);
-            this.buttonDebug.TabIndex = 15;
-            this.buttonDebug.Text = "DEBUG";
-            this.buttonDebug.UseVisualStyleBackColor = true;
-            this.buttonDebug.Click += new System.EventHandler(this.buttonDebug_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(477, 550);
-            this.Controls.Add(this.buttonDebug);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.checkBoxAll);
             this.Controls.Add(this.dataGridView1);
@@ -285,7 +273,6 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel statusLabelFiles;
         private System.Windows.Forms.ToolStripStatusLabel statusLabelTabs;
-        private System.Windows.Forms.Button buttonDebug;
     }
 }
 
