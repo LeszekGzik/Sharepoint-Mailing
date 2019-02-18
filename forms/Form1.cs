@@ -69,7 +69,7 @@ namespace Sharepoint_Mailing
             dataGridView1.Rows.Clear();
             foreach (FileInfo file in files)
             {
-                dataGridView1.Rows.Add(file.Name);
+                dataGridView1.Rows.Add(file.FullName.Replace(textBoxFilePath.Text+"\\",""));
             }
         }
         
@@ -247,6 +247,7 @@ namespace Sharepoint_Mailing
                     sumOfTabs += 4;
                 }
             }
+            updateStatusStrip();
         }
 
         private void updateStatusStrip()
