@@ -45,14 +45,15 @@ namespace Sharepoint_Mailing
             userList.getAddresses(mailReader);
             String errorString = userList.getErrorString();
 
-            ExcelWriter writer = new ExcelWriter("temptemptemp.xlsx");
-            writer.writeHeaders();
-            writer.writeErrors(userList);
-            writer.save();
-
             if (checkBoxMail.Checked)
             {
-                sendReport(errorString);
+                String temp = Environment.CurrentDirectory + "/temp.xlsx";
+                ExcelWriter writer = new ExcelWriter(temp);
+                writer.writeHeaders();
+                writer.writeErrors(userList);
+                writer.save();
+                sendReport("Please find attached the report.", temp);
+                writer.delete();
             }
 
             MessageBox.Show(errorString);
@@ -100,7 +101,7 @@ namespace Sharepoint_Mailing
 
             if (checkBoxMail.Checked)
             {
-                sendReport(errorString);
+                sendReport(errorString, "");
             }
 
             outlookMailer.sendToAll("ZSOX Sharepoint Reminder", userList);
@@ -233,9 +234,9 @@ namespace Sharepoint_Mailing
         }
 
         //wysyła zbiorczy, kompletny raport na adres podany w textboksie
-        private void sendReport(String message)
+        private void sendReport(String message, String filePath)
         {
-            outlookMailer.sendMail("ZSOX Sharepoint check results from day " + DateTime.Now.ToShortDateString(), textBoxControllerEmail.Text, message);
+            outlookMailer.sendMail("ZSOX Sharepoint check results from day " + DateTime.Now.ToShortDateString(), textBoxControllerEmail.Text, message, filePath);
         }
 
         private void setUpStatusStrip()

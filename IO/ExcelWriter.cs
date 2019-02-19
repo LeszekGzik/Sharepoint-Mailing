@@ -1,6 +1,7 @@
 ﻿using Sharepoint_Mailing.model;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,9 +20,9 @@ namespace Sharepoint_Mailing.IO
 
         public int Row { get => row; set => row = value; }
 
-        public ExcelWriter(String fileName)
+        public ExcelWriter(String filePath)
         {
-            this.fileName = fileName;
+            this.fileName = filePath;
             app = new Excel.Application();
             app.DisplayAlerts = false;
             workbook = app.Workbooks.Add();
@@ -53,6 +54,12 @@ namespace Sharepoint_Mailing.IO
             worksheet.Cells[2, 14] = "Stream Lead Name";
             worksheet.Cells[2, 15] = "Stream Lead E-Mail Address";
             Row = 3;
+        }
+
+        internal void delete()
+        {
+            app.Quit();
+            File.Delete(fileName);
         }
 
         public void writeErrors(User user)
@@ -104,9 +111,8 @@ namespace Sharepoint_Mailing.IO
 
         public void save()
         {
-            workbook.SaveAs("./" + fileName);
+            workbook.SaveAs(fileName);
             workbook.Close();
-            app.Quit();
         }
     }
 }

@@ -43,5 +43,20 @@ namespace Sharepoint_Mailing.model
             mailItem.Display(false);
             mailItem.Send();
         }
+
+        public void sendMail(String subject, String address, String message, params String[] attachments)
+        {
+            Outlook.MailItem mailItem = app.CreateItem(Outlook.OlItemType.olMailItem);
+            mailItem.Subject = subject;
+            mailItem.To = address;
+            mailItem.Body = message;
+            mailItem.BodyFormat = Outlook.OlBodyFormat.olFormatRichText;
+            foreach(String filePath in attachments)
+            {
+                mailItem.Attachments.Add(filePath, Outlook.OlAttachmentType.olByValue, 1, "Report.xlsx");
+            }
+            mailItem.Display(false);
+            mailItem.Send();
+        }
     }
 }
