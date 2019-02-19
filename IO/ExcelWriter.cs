@@ -23,6 +23,7 @@ namespace Sharepoint_Mailing.IO
         {
             this.fileName = fileName;
             app = new Excel.Application();
+            app.DisplayAlerts = false;
             workbook = app.Workbooks.Add();
             worksheet = workbook.Worksheets.Item[1];
         }

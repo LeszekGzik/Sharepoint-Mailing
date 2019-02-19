@@ -39,6 +39,7 @@ namespace Sharepoint_Mailing.model
             this.filePath = filePath;
             FileName = filePath.Substring(filePath.LastIndexOf("\\")+1);
             app = new Excel.Application();
+            app.DisplayAlerts = false;
             workbook = app.Workbooks.Open(filePath);
             emptyRowsTotal = 0;
             allSheetsRowsTotal = 0;

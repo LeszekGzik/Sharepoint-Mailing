@@ -35,7 +35,7 @@ namespace Sharepoint_Mailing.model
             Tab = _tab;
             Column = _column;
             Date = _date;
-            Count = count;
+            Count = _count;
         }
 
         public void increment(int howMany)

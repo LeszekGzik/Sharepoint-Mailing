@@ -42,7 +42,7 @@ namespace Sharepoint_Mailing
                 }
             }
             userList.getFullNames(mailReader);
-            userList = userList.mergeExcessUsers();
+            userList.getAddresses(mailReader);
             String errorString = userList.getErrorString();
 
             ExcelWriter writer = new ExcelWriter("temptemptemp.xlsx");
