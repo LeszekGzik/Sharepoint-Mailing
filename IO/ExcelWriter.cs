@@ -89,9 +89,10 @@ namespace Sharepoint_Mailing.IO
                 if (rr.Comment != 0) { worksheet.Cells[Row, 10] = rr.Comment; }
                 if (rr.KeyUserApproval != 0) { worksheet.Cells[Row, 11] = rr.KeyUserApproval; }
                 if (rr.ApprovalInIncident != 0) { worksheet.Cells[Row, 12] = rr.ApprovalInIncident; }
-                worksheet.Cells[Row, 13] = rr.Stream;
-                worksheet.Cells[Row, 14] = rr.StreamLeadName;
-                worksheet.Cells[Row, 15] = rr.StreamLeadAddress;
+                worksheet.Cells[Row, 13] = rr.TotalErrors;
+                worksheet.Cells[Row, 14] = rr.Stream;
+                worksheet.Cells[Row, 15] = rr.StreamLeadName;
+                worksheet.Cells[Row, 16] = rr.StreamLeadAddress;
                 Row++;
             }
         }

@@ -14,6 +14,7 @@ namespace Sharepoint_Mailing.model
         int comment;
         int keyUserApproval;
         int approvalInIncident;
+        int totalErrors;
 
         String name;
         String address;
@@ -45,6 +46,7 @@ namespace Sharepoint_Mailing.model
         public int Comment { get => comment; set => comment = value; }
         public int KeyUserApproval { get => keyUserApproval; set => keyUserApproval = value; }
         public int ApprovalInIncident { get => approvalInIncident; set => approvalInIncident = value; }
+        public int TotalErrors { get => totalErrors; set => totalErrors = value; }
 
         public ReportRow(User user, String _tab, String _file, String _date)
         {
@@ -67,6 +69,7 @@ namespace Sharepoint_Mailing.model
             Comment = 0;
             KeyUserApproval = 0;
             ApprovalInIncident = 0;
+            TotalErrors = 0;
         }
 
         public void addToColumn(int number, String column)
@@ -92,6 +95,7 @@ namespace Sharepoint_Mailing.model
                     ApprovalInIncident += number;
                     break;
             }
+            TotalErrors += number;
         }
     }
 }
