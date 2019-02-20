@@ -29,6 +29,16 @@ namespace Sharepoint_Mailing.IO
             worksheet = workbook.Worksheets.Item[1];
         }
 
+        public void importHeaders(String template)
+        {
+            Excel.Workbook tempBook = app.Workbooks.Open(template);
+            Excel.Worksheet tempSheet = tempBook.Worksheets[1];
+            tempSheet.Copy(workbook.Worksheets[1]);
+            worksheet = workbook.Worksheets.Item[1];
+            tempBook.Close();
+            Row = 3;
+        }
+
         public void writeHeaders()
         {
             //first row
@@ -111,6 +121,9 @@ namespace Sharepoint_Mailing.IO
 
         public void save()
         {
+            Excel.Range range = worksheet.Range[worksheet.Cells[4,1], worksheet.Cells[Row,15]];
+            range.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;
+            range.Borders.Weight = Excel.XlBorderWeight.xlThin;
             workbook.SaveAs(fileName);
             workbook.Close();
         }

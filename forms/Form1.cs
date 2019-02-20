@@ -49,7 +49,8 @@ namespace Sharepoint_Mailing
             {
                 String temp = Environment.CurrentDirectory + "/temp.xlsx";
                 ExcelWriter writer = new ExcelWriter(temp);
-                writer.writeHeaders();
+                //writer.writeHeaders();
+                writer.importHeaders(Environment.CurrentDirectory + "/ZSOX report template.xlsx");
                 writer.writeErrors(userList);
                 writer.save();
                 sendReport("Please find attached the report.", temp);
