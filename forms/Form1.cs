@@ -255,6 +255,8 @@ namespace Sharepoint_Mailing
                     sumOfTabs += 4;
                 }
             }
+            progressBar1.Maximum = sumOfTabs;
+            progressBar1.Step = 1;
             updateStatusStrip();
         }
 
@@ -262,6 +264,7 @@ namespace Sharepoint_Mailing
         {
             statusLabelFiles.Text = "Files done: " + doneFiles + "/" + sumOfFiles;
             statusLabelTabs.Text = "Tabs done: " + doneTabs + "/" + sumOfTabs;
+            progressBar1.PerformStep();
         }
     }
 }

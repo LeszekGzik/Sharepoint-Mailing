@@ -49,6 +49,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.statusLabelFiles = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusLabelTabs = new System.Windows.Forms.ToolStripStatusLabel();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -222,11 +223,19 @@
             this.statusLabelTabs.Size = new System.Drawing.Size(85, 17);
             this.statusLabelTabs.Text = "Tabs done: 0/0";
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(183, 528);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(294, 23);
+            this.progressBar1.TabIndex = 15;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(477, 550);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.checkBoxAll);
             this.Controls.Add(this.dataGridView1);
@@ -274,6 +283,7 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel statusLabelFiles;
         private System.Windows.Forms.ToolStripStatusLabel statusLabelTabs;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
 
