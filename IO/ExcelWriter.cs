@@ -72,6 +72,30 @@ namespace Sharepoint_Mailing.IO
             File.Delete(fileName);
         }
 
+        public void writeReport(ReportRowsList list)
+        {
+            foreach(String key in list.getKeys())
+            {
+                ReportRow rr = list.get(key);
+                worksheet.Cells[Row, 1] = rr.Date;
+                worksheet.Cells[Row, 2] = rr.FileName;
+                worksheet.Cells[Row, 3] = rr.Name;
+                worksheet.Cells[Row, 4] = rr.FullName;
+                worksheet.Cells[Row, 5] = rr.Address;
+                worksheet.Cells[Row, 6] = rr.FileTab;
+                if (rr.IncidentNumber != 0) { worksheet.Cells[Row, 7] = rr.IncidentNumber; }
+                if (rr.Comments != 0) { worksheet.Cells[Row, 8] = rr.Comments; }
+                if (rr.Approver != 0) { worksheet.Cells[Row, 9] = rr.Approver; }
+                if (rr.Comment != 0) { worksheet.Cells[Row, 10] = rr.Comment; }
+                if (rr.KeyUserApproval != 0) { worksheet.Cells[Row, 11] = rr.KeyUserApproval; }
+                if (rr.ApprovalInIncident != 0) { worksheet.Cells[Row, 12] = rr.ApprovalInIncident; }
+                worksheet.Cells[Row, 13] = rr.Stream;
+                worksheet.Cells[Row, 14] = rr.StreamLeadName;
+                worksheet.Cells[Row, 15] = rr.StreamLeadAddress;
+                Row++;
+            }
+        }
+
         public void writeErrors(User user)
         {
             foreach(String key in user.getErrorKeys())
@@ -121,7 +145,7 @@ namespace Sharepoint_Mailing.IO
 
         public void save()
         {
-            Excel.Range range = worksheet.Range[worksheet.Cells[4,1], worksheet.Cells[Row,15]];
+            Excel.Range range = worksheet.Range[worksheet.Cells[4,1], worksheet.Cells[Row-1,15]];
             range.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;
             range.Borders.Weight = Excel.XlBorderWeight.xlThin;
             workbook.SaveAs(fileName);

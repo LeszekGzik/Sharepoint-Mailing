@@ -73,6 +73,8 @@
     <Compile Include="IO\ExcelReader.cs" />
     <Compile Include="IO\MailReader.cs" />
     <Compile Include="IO\OutlookMailer.cs" />
+    <Compile Include="model\ReportRow.cs" />
+    <Compile Include="model\ReportRowsList.cs" />
     <Compile Include="model\User.cs" />
     <Compile Include="model\UserList.cs" />
     <Compile Include="Program.cs" />
