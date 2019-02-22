@@ -147,7 +147,7 @@ namespace Sharepoint_Mailing.IO
 
         public void save()
         {
-            Excel.Range range = worksheet.Range[worksheet.Cells[4,1], worksheet.Cells[Row-1,15]];
+            Excel.Range range = worksheet.Range[worksheet.Cells[4,1], worksheet.Cells[Row-1,16]];
             range.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;
             range.Borders.Weight = Excel.XlBorderWeight.xlThin;
             workbook.SaveAs(fileName);
