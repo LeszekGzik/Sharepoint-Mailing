@@ -29,13 +29,14 @@ namespace Sharepoint_Mailing.IO
             worksheet = workbook.Worksheets.Item[1];
         }
 
-        public void importHeaders(String template)
+        public ExcelWriter(String templatePath, String filePath)
         {
-            Excel.Workbook tempBook = app.Workbooks.Open(template);
-            Excel.Worksheet tempSheet = tempBook.Worksheets[1];
-            tempSheet.Copy(workbook.Worksheets[1]);
+            this.fileName = filePath;
+            File.Copy(templatePath, filePath, true);
+            app = new Excel.Application();
+            app.DisplayAlerts = false;
+            workbook = app.Workbooks.Open(fileName);
             worksheet = workbook.Worksheets.Item[1];
-            tempBook.Close();
             Row = 3;
         }
 

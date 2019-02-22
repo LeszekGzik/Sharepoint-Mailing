@@ -48,15 +48,16 @@ namespace Sharepoint_Mailing
             if (checkBoxMail.Checked)
             {
                 String temp = Environment.CurrentDirectory + "/temp.xlsx";
-                ExcelWriter writer = new ExcelWriter(temp);
+                String template = Environment.CurrentDirectory + "/ZSOX report template.xlsx";
+                ExcelWriter writer = new ExcelWriter(template, temp);
                 ReportRowsList rrl = new ReportRowsList(userList);
-                writer.importHeaders(Environment.CurrentDirectory + "/ZSOX report template.xlsx");
                 writer.writeReport(rrl);
                 writer.save();
                 sendReport("Please find attached the report.", temp);
                 writer.delete();
             }
 
+            mailReader.close();
             MessageBox.Show(errorString);
         }
 
