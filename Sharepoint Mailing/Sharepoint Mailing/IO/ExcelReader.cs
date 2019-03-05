@@ -71,7 +71,7 @@ namespace Sharepoint_Mailing.model
 
             UserList users = new UserList();
 
-            Excel.Range range = worksheet.Cells.Find("Incident Number");
+            Excel.Range range = worksheet.Cells.Find("Incident_Number");
             int incidentColumn = range.Column;
             int row = range.Row;
 
@@ -87,13 +87,13 @@ namespace Sharepoint_Mailing.model
             range = worksheet.Rows[row].Find("Comment")[2];
             int commentColumn = range.Column;
 
-            range = worksheet.Cells.Find("Key User Approval");
+            range = worksheet.Cells.Find("Key_User_Approval");
             int keyUserColumn = range.Column;
 
-            range = worksheet.Rows[row].Find("Approval in incident");
+            range = worksheet.Rows[row].Find("Approval_in_incident_Yes_No");
             int approvalColumn = range.Column;
 
-            range = worksheet.Rows[row].Find("Date");
+            range = worksheet.Rows[row].Find("CHG_Date");
             int dateColumn = range.Column;
 
             for (int i = row + 1; i < RowsTotal; i++)
