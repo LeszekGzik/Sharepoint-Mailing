@@ -10,3 +10,15 @@ C:\Users\A0631675\Desktop\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Maili
 C:\Users\A0631675\Desktop\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\obj\Debug\Sharepoint Mailing.csproj.ResolveComReference.cache
 C:\Users\A0631675\Desktop\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\obj\Debug\Interop.OWSSUPP.dll
 C:\Users\A0631675\Desktop\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\obj\Debug\Sharepoint Mailing.csprojAssemblyReference.cache
+C:\Users\A0631675\Desktop\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\bin\Debug\Sharepoint Mailing.exe.config
+C:\Users\A0631675\Desktop\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\bin\Debug\Sharepoint Mailing.exe
+C:\Users\A0631675\Desktop\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\bin\Debug\Sharepoint Mailing.pdb
+C:\Users\A0631675\Desktop\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\obj\Debug\Sharepoint Mailing.csprojAssemblyReference.cache
+C:\Users\A0631675\Desktop\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\obj\Debug\Interop.OWSSUPP.dll
+C:\Users\A0631675\Desktop\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\obj\Debug\Sharepoint Mailing.csproj.ResolveComReference.cache
+C:\Users\A0631675\Desktop\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\obj\Debug\Sharepoint_Mailing.Form1.resources
+C:\Users\A0631675\Desktop\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\obj\Debug\Sharepoint_Mailing.Properties.Resources.resources
+C:\Users\A0631675\Desktop\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\obj\Debug\Sharepoint Mailing.csproj.GenerateResource.cache
+C:\Users\A0631675\Desktop\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\obj\Debug\Sharepoint Mailing.csproj.CoreCompileInputs.cache
+C:\Users\A0631675\Desktop\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\obj\Debug\Sharepoint Mailing.exe
+C:\Users\A0631675\Desktop\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\obj\Debug\Sharepoint Mailing.pdb

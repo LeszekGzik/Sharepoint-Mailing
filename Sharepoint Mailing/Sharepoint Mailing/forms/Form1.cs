@@ -26,39 +26,13 @@ namespace Sharepoint_Mailing
             InitializeComponent();
             outlookMailer = new OutlookMailer();
             loadConfig();
+            backgroundWorker1.WorkerReportsProgress = true;
         }
 
         private void buttonCheck_Click(object sender, EventArgs e)
         {
             setUpStatusStrip();
-            mailReader = new MailReader(textBoxEmailPath.Text);
-            UserList userList = new UserList();
-            foreach(DataGridViewRow row in dataGridView1.Rows)
-            {
-                DataGridViewCheckBoxCell chk = (DataGridViewCheckBoxCell)row.Cells[1];
-                if (chk.Value == chk.TrueValue)
-                {
-                    userList.sum(runCheckOnFile(textBoxFilePath.Text + "\\" + row.Cells[0].Value.ToString()));
-                }
-            }
-            userList.getFullNames(mailReader);
-            userList.getAddresses(mailReader);
-            String errorString = userList.getErrorString();
-
-            if (checkBoxMail.Checked)
-            {
-                String temp = Environment.CurrentDirectory + "/temp.xlsx";
-                String template = Environment.CurrentDirectory + "/ZSOX report template.xlsx";
-                ExcelWriter writer = new ExcelWriter(template, temp);
-                ReportRowsList rrl = new ReportRowsList(userList);
-                writer.writeReport(rrl);
-                writer.save();
-                sendReport("Please find attached the report.", temp);
-                writer.delete();
-            }
-
-            mailReader.close();
-            MessageBox.Show(errorString);
+            backgroundWorker1.RunWorkerAsync();
         }
 
         private void buttonOpenFile_Click(object sender, EventArgs e)
@@ -82,6 +56,7 @@ namespace Sharepoint_Mailing
             }
         }
         
+        //outdated
         private void buttonCheckAndRemind_Click(object sender, EventArgs e)
         {
             setUpStatusStrip();
@@ -122,7 +97,7 @@ namespace Sharepoint_Mailing
             users = users.sum(runCheckOnTab("DBTABLOG"));
             excelReader.close();
             doneFiles++;
-            updateStatusStrip();
+            updateLabels();
 
             Console.WriteLine("File check finished: " + filePath);
 
@@ -137,7 +112,7 @@ namespace Sharepoint_Mailing
             UserList userList = excelReader.findMissingCells();
             Console.WriteLine("   Tab check finished: " + tab);
             doneTabs++;
-            updateStatusStrip();
+            backgroundWorker1.ReportProgress((int)((double)doneTabs / (double)sumOfTabs * 100));
 
             return userList;
         }
@@ -235,6 +210,43 @@ namespace Sharepoint_Mailing
             doc.Save("config.xml");
         }
 
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            mailReader = new MailReader(textBoxEmailPath.Text);
+            UserList userList = new UserList();
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                DataGridViewCheckBoxCell chk = (DataGridViewCheckBoxCell)row.Cells[1];
+                if (chk.Value == chk.TrueValue)
+                {
+                    userList.sum(runCheckOnFile(textBoxFilePath.Text + "\\" + row.Cells[0].Value.ToString()));
+                }
+            }
+            userList.getFullNames(mailReader);
+            userList.getAddresses(mailReader);
+            String errorString = userList.getErrorString();
+
+            if (checkBoxMail.Checked)
+            {
+                String temp = Environment.CurrentDirectory + "/temp.xlsx";
+                String template = Environment.CurrentDirectory + "/ZSOX report template.xlsx";
+                ExcelWriter writer = new ExcelWriter(template, temp);
+                ReportRowsList rrl = new ReportRowsList(userList);
+                writer.writeReport(rrl);
+                writer.save();
+                sendReport("Please find attached the report.", temp);
+                writer.delete();
+            }
+
+            mailReader.close();
+            MessageBox.Show(errorString);
+        }
+
+        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            updateStatusStrip();
+        }
+
         //wysyła zbiorczy, kompletny raport na adres podany w textboksie
         private void sendReport(String message, String filePath)
         {
@@ -258,14 +270,19 @@ namespace Sharepoint_Mailing
             }
             progressBar1.Maximum = sumOfTabs;
             progressBar1.Step = 1;
-            updateStatusStrip();
+            updateLabels();
         }
 
         private void updateStatusStrip()
         {
+            updateLabels();
+            progressBar1.PerformStep();
+        }
+
+        private void updateLabels()
+        {
             statusLabelFiles.Text = "Files done: " + doneFiles + "/" + sumOfFiles;
             statusLabelTabs.Text = "Tabs done: " + doneTabs + "/" + sumOfTabs;
-            progressBar1.PerformStep();
         }
     }
 }
