@@ -15,6 +15,7 @@ namespace Sharepoint_Mailing.model
         protected Excel.Application app;
         protected Excel.Workbook workbook;
         protected Excel._Worksheet worksheet;
+        private int rowsTotal;
         private int emptyRowsTotal;
 
         Dictionary<String, int> errorList1, errorList2, errorList3;
@@ -25,6 +26,7 @@ namespace Sharepoint_Mailing.model
         public Dictionary<string, int> ErrorList2 { get => errorList2; set => errorList2 = value; }
         public Dictionary<string, int> ErrorList3 { get => errorList3; set => errorList3 = value; }
         public int EmptyRowsTotal { get => emptyRowsTotal; set => emptyRowsTotal = value; }
+        public int RowsTotal { get => rowsTotal; set => rowsTotal = value; }
 
         public ExcelReader() { }
 
@@ -44,6 +46,8 @@ namespace Sharepoint_Mailing.model
         {
             SheetName = sheet;
             worksheet = workbook.Sheets[sheet];
+            //Excel.Range last = worksheet.Cells.SpecialCells(Excel.XlCellType.xlCellTypeLastCell, Type.Missing);
+            RowsTotal = worksheet.UsedRange.Rows.Count;
         }
 
         //zamyka plik excelowy
@@ -147,11 +151,14 @@ namespace Sharepoint_Mailing.model
                 if (error)
                 {
                     cell = worksheet.Cells[userColumn][i];
-                    String userName = cell.Value.ToString();
-                    cell = worksheet.Cells[dateColumn][i];
-                    String date = cell.Value.ToString();
-                    users.add(userName, "Consultant");
-                    users.addError(userName, fileName, sheetName, column, date);
+                    if (cell.Value != null)
+                    {
+                        String userName = cell.Value.ToString();
+                        cell = worksheet.Cells[dateColumn][i];
+                        String date = cell.Value.ToString();
+                        users.add(userName, "Consultant");
+                        users.addError(userName, fileName, sheetName, column, date);
+                    }
                 }
             }
 
