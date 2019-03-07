@@ -17,8 +17,7 @@ namespace Sharepoint_Mailing.model
             app = new Outlook.Application();
         }
 
-        //rozsyła wszystkie maile podane w argumencie w postaci listy <adres, wiadomość>
-        public void sendToAll(String subject, UserList userList)
+        public void sendToAll(String subject, UserList userList, String message, params String[] attachments)
         {
             Outlook.MailItem mailItem;
             foreach (String userName in userList.Items.Keys)
@@ -26,8 +25,12 @@ namespace Sharepoint_Mailing.model
                 mailItem = app.CreateItem(Outlook.OlItemType.olMailItem);
                 mailItem.Subject = subject;
                 mailItem.To = userList.get(userName).Address;
-                mailItem.Body = userList.getErrorString(userName);
+                mailItem.Body = message;
                 mailItem.BodyFormat = Outlook.OlBodyFormat.olFormatRichText;
+                foreach (String filePath in attachments)
+                {
+                    mailItem.Attachments.Add(filePath, Outlook.OlAttachmentType.olByValue, 1, "Report.xlsx");
+                }
                 mailItem.Display(false);
                 mailItem.Send();
             }

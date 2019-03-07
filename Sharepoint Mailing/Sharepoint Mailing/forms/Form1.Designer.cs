@@ -94,7 +94,6 @@
             // 
             // buttonRunCheckAndRemind
             // 
-            this.buttonRunCheckAndRemind.Enabled = false;
             this.buttonRunCheckAndRemind.Location = new System.Drawing.Point(261, 468);
             this.buttonRunCheckAndRemind.Name = "buttonRunCheckAndRemind";
             this.buttonRunCheckAndRemind.Size = new System.Drawing.Size(121, 23);

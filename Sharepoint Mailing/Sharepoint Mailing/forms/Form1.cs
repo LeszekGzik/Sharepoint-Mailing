@@ -32,7 +32,8 @@ namespace Sharepoint_Mailing
         private void buttonCheck_Click(object sender, EventArgs e)
         {
             setUpStatusStrip();
-            backgroundWorker1.RunWorkerAsync();
+            backgroundWorker1.RunWorkerAsync(argument: false);
+
         }
 
         private void buttonOpenFile_Click(object sender, EventArgs e)
@@ -60,28 +61,7 @@ namespace Sharepoint_Mailing
         private void buttonCheckAndRemind_Click(object sender, EventArgs e)
         {
             setUpStatusStrip();
-            mailReader = new MailReader(textBoxEmailPath.Text);
-            UserList userList = new UserList();
-            foreach (DataGridViewRow row in dataGridView1.Rows)
-            {
-                DataGridViewCheckBoxCell chk = (DataGridViewCheckBoxCell)row.Cells[1];
-                if (chk.Value == chk.TrueValue)
-                {
-                    userList.sum(runCheckOnFile(textBoxFilePath.Text + "\\" + row.Cells[0].Value.ToString()));
-                }
-            }
-            userList.getFullNames(mailReader);
-            userList = userList.mergeExcessUsers();
-            userList.getAddresses(mailReader);
-
-            String errorString = userList.getErrorString();
-
-            if (checkBoxMail.Checked)
-            {
-                sendReport(errorString, "");
-            }
-
-            outlookMailer.sendToAll("ZSOX Sharepoint Reminder", userList);
+            backgroundWorker1.RunWorkerAsync(argument: true);
         }
 
         //przeprowadza sprawdzenie wszystkich zakładek w pliku; zwraca listę wszystkich błędów + podsumowanie w postaci stringa
@@ -212,6 +192,7 @@ namespace Sharepoint_Mailing
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
+            Boolean remind = (Boolean)e.Argument;
             mailReader = new MailReader(textBoxEmailPath.Text);
             UserList userList = new UserList();
             foreach (DataGridViewRow row in dataGridView1.Rows)
@@ -226,17 +207,26 @@ namespace Sharepoint_Mailing
             userList.getAddresses(mailReader);
             String errorString = userList.getErrorString();
 
+            String temp = Environment.CurrentDirectory + "/temp.xlsx";
+            String template = Environment.CurrentDirectory + "/ZSOX report template.xlsx";
+            ExcelWriter writer = new ExcelWriter(template, temp);
+            ReportRowsList rrl = new ReportRowsList(userList);
+            writer.writeReport(rrl);
+            writer.save();
+
             if (checkBoxMail.Checked)
             {
-                String temp = Environment.CurrentDirectory + "/temp.xlsx";
-                String template = Environment.CurrentDirectory + "/ZSOX report template.xlsx";
-                ExcelWriter writer = new ExcelWriter(template, temp);
-                ReportRowsList rrl = new ReportRowsList(userList);
-                writer.writeReport(rrl);
-                writer.save();
-                sendReport("Please find attached the report.", temp);
-                writer.delete();
+                //raport zbiorczy do kontrolera
+                outlookMailer.sendMail("ZSOX Sharepoint check results from day " + DateTime.Now.ToShortDateString(), textBoxControllerEmail.Text, "Please find attached the report.", temp);
             }
+
+            if (remind)
+            {
+                //reminder do wszystkich którzy mają coś niewypełnione
+                outlookMailer.sendToAll("ZSOX Sharepoint check results from day " + DateTime.Now.ToShortDateString(), userList, "Please find attached the report.", temp);
+            }
+
+            writer.delete();
 
             mailReader.close();
             MessageBox.Show(errorString);
@@ -245,12 +235,6 @@ namespace Sharepoint_Mailing
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             updateStatusStrip();
-        }
-
-        //wysyła zbiorczy, kompletny raport na adres podany w textboksie
-        private void sendReport(String message, String filePath)
-        {
-            outlookMailer.sendMail("ZSOX Sharepoint check results from day " + DateTime.Now.ToShortDateString(), textBoxControllerEmail.Text, message, filePath);
         }
 
         private void setUpStatusStrip()

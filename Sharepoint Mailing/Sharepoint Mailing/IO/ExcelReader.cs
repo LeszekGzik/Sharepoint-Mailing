@@ -63,6 +63,10 @@ namespace Sharepoint_Mailing.model
             UserList users = new UserList();
 
             Excel.Range range = worksheet.Cells.Find("Incident_Number");
+            if(range==null)
+            {
+                range = worksheet.Cells.Find("Incident Number");
+            }
             int incidentColumn = range.Column;
             int row = range.Row;
 
@@ -79,12 +83,24 @@ namespace Sharepoint_Mailing.model
             int commentColumn = range.Column;
 
             range = worksheet.Cells.Find("Key_User_Approval");
+            if (range == null)
+            {
+                range = worksheet.Cells.Find("Key User Approval/Comment");
+            }
             int keyUserColumn = range.Column;
 
             range = worksheet.Rows[row].Find("Approval_in_incident_Yes_No");
+            if (range == null)
+            {
+                range = worksheet.Cells.Find("Approval in incident (Yes/No)");
+            }
             int approvalColumn = range.Column;
 
             range = worksheet.Rows[row].Find("CHG_Date");
+            if (range == null)
+            {
+                range = worksheet.Cells.Find("Date");
+            }
             int dateColumn = range.Column;
 
             for (int i = row + 1; i < RowsTotal; i++)
@@ -94,7 +110,7 @@ namespace Sharepoint_Mailing.model
 
                 //step1
                 Excel.Range cell = worksheet.Cells[incidentColumn][i];
-                if (cell.Value == null || cell.Value.ToString().Equals(""))
+                if (cell.Value == null || cell.Value.ToString().Equals(".") || cell.Value.ToString().Equals(""))
                 {
                     error = true;
                     column = "Incident Number";
@@ -102,7 +118,7 @@ namespace Sharepoint_Mailing.model
                 else
                 {
                     cell = worksheet.Cells[commentsColumn][i];
-                    if (cell.Value == null || cell.Value.ToString().Equals(""))
+                    if (cell.Value == null || cell.Value.ToString().Equals(".") || cell.Value.ToString().Equals(""))
                     {
                         error = true;
                         column = "Comments";
@@ -111,7 +127,7 @@ namespace Sharepoint_Mailing.model
                     {
                         //step2
                         cell = worksheet.Cells[approverColumn][i];
-                        if (cell.Value == null || cell.Value.ToString().Equals(""))
+                        if (cell.Value == null || cell.Value.ToString().Equals(".") || cell.Value.ToString().Equals(""))
                         {
                             error = true;
                             column = "Approver";
@@ -119,7 +135,7 @@ namespace Sharepoint_Mailing.model
                         else
                         {
                             cell = worksheet.Cells[commentColumn][i];
-                            if (cell.Value == null || cell.Value.ToString().Equals(""))
+                            if (cell.Value == null || cell.Value.ToString().Equals(".") || cell.Value.ToString().Equals(""))
                             {
                                 error = true;
                                 column = "Comment";
@@ -128,7 +144,7 @@ namespace Sharepoint_Mailing.model
                             {
                                 //step3
                                 cell = worksheet.Cells[keyUserColumn][i];
-                                if (cell.Value == null || cell.Value.ToString().Equals(""))
+                                if (cell.Value == null || cell.Value.ToString().Equals(".") || cell.Value.ToString().Equals(""))
                                 {
                                     error = true;
                                     column = "Key User Approval/Comment";
@@ -136,7 +152,7 @@ namespace Sharepoint_Mailing.model
                                 else
                                 {
                                     cell = worksheet.Cells[approvalColumn][i];
-                                    if (cell.Value == null || cell.Value.ToString().Equals(""))
+                                    if (cell.Value == null || cell.Value.ToString().Equals(".") || cell.Value.ToString().Equals(""))
                                     {
                                         error = true;
                                         column = "Approval in incident (Yes/No)";
