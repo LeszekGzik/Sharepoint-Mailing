@@ -154,9 +154,9 @@
             this.checkBoxMail.AutoSize = true;
             this.checkBoxMail.Location = new System.Drawing.Point(49, 421);
             this.checkBoxMail.Name = "checkBoxMail";
-            this.checkBoxMail.Size = new System.Drawing.Size(188, 17);
+            this.checkBoxMail.Size = new System.Drawing.Size(255, 17);
             this.checkBoxMail.TabIndex = 10;
-            this.checkBoxMail.Text = "Mail me a report when you\'re done";
+            this.checkBoxMail.Text = "Don\'t save the report and send it via mail instead";
             this.checkBoxMail.UseVisualStyleBackColor = true;
             this.checkBoxMail.CheckedChanged += new System.EventHandler(this.checkBoxMail_CheckedChanged);
             // 

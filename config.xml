@@ -2,6 +2,6 @@
 <config>
   <mailingPath>C:\Users\A0631675\ArcelorMittal\Service Management - ZSOX_AMEI Explanation Folder\PCE_UserName_Details.xlsx</mailingPath>
   <recentPath>C:\Users\A0631675\ArcelorMittal\Service Management - ZSOX_AMEI Explanation Folder\2019.01</recentPath>
-  <mailMe>True</mailMe>
+  <mailMe>False</mailMe>
   <mailTo>leszek.gzik@arcelormittal.com</mailTo>
 </config>

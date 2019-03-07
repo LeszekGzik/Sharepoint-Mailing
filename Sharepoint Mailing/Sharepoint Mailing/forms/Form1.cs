@@ -207,18 +207,12 @@ namespace Sharepoint_Mailing
             userList.getAddresses(mailReader);
             String errorString = userList.getErrorString();
 
-            String temp = Environment.CurrentDirectory + "/temp.xlsx";
+            String temp = Environment.CurrentDirectory + "\\Reports\\" + DateTime.Now.ToString("yyyy-MM-dd hh-mm-ss") + ".xlsx";
             String template = Environment.CurrentDirectory + "/ZSOX report template.xlsx";
             ExcelWriter writer = new ExcelWriter(template, temp);
             ReportRowsList rrl = new ReportRowsList(userList);
             writer.writeReport(rrl);
             writer.save();
-
-            if (checkBoxMail.Checked)
-            {
-                //raport zbiorczy do kontrolera
-                outlookMailer.sendMail("ZSOX Sharepoint check results from day " + DateTime.Now.ToShortDateString(), textBoxControllerEmail.Text, "Please find attached the report.", temp);
-            }
 
             if (remind)
             {
@@ -226,7 +220,13 @@ namespace Sharepoint_Mailing
                 outlookMailer.sendToAll("ZSOX Sharepoint check results from day " + DateTime.Now.ToShortDateString(), userList, "Please find attached the report.", temp);
             }
 
-            writer.delete();
+
+            if (checkBoxMail.Checked)
+            {
+                //raport zbiorczy do kontrolera
+                outlookMailer.sendMail("ZSOX Sharepoint check results from day " + DateTime.Now.ToShortDateString(), textBoxControllerEmail.Text, "Please find attached the report.", temp);
+                writer.delete();
+            }
 
             mailReader.close();
             MessageBox.Show(errorString);
@@ -253,6 +253,7 @@ namespace Sharepoint_Mailing
                 }
             }
             progressBar1.Maximum = sumOfTabs;
+            progressBar1.Value = 0;
             progressBar1.Step = 1;
             updateLabels();
         }

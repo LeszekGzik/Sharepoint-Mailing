@@ -100,6 +100,10 @@ namespace Sharepoint_Mailing.model
             if (range == null)
             {
                 range = worksheet.Cells.Find("Date");
+                if (range == null)
+                {
+                    range = worksheet.Cells.Find("DBTABLOG-LOGDATE");
+                }
             }
             int dateColumn = range.Column;
 
