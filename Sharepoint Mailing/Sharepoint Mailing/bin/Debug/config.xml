@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <config>
-  <mailingPath>C:\Users\A0631675\Desktop\Sharepoint Mailing\Sharepoint Mailing\Sharepoint Mailing\Mailing list.xlsx</mailingPath>
-  <recentPath>C:\Users\A0631675\Desktop\Sharepoint Mailing</recentPath>
+  <mailingPath>C:\Users\A0631675\ArcelorMittal\Service Management - ZSOX_AMEI Explanation Folder\PCE_UserName_Details.xlsx</mailingPath>
+  <recentPath>C:\Users\A0631675\ArcelorMittal\Service Management - ZSOX_AMEI Explanation Folder\2019.03</recentPath>
   <mailMe>True</mailMe>
   <mailTo>leszek.gzik@arcelormittal.com</mailTo>
 </config>

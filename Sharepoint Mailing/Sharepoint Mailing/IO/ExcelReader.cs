@@ -15,12 +15,9 @@ namespace Sharepoint_Mailing.model
         protected Excel.Application app;
         protected Excel.Workbook workbook;
         protected Excel._Worksheet worksheet;
-        private int rowsTotal;
         private int emptyRowsTotal;
-        private int allSheetsRowsTotal;
 
         Dictionary<String, int> errorList1, errorList2, errorList3;
-        private int columnsTotal;
 
         public string SheetName { get => sheetName; set => sheetName = value; }
         public string FileName { get => fileName; set => fileName = value; }
@@ -28,9 +25,6 @@ namespace Sharepoint_Mailing.model
         public Dictionary<string, int> ErrorList2 { get => errorList2; set => errorList2 = value; }
         public Dictionary<string, int> ErrorList3 { get => errorList3; set => errorList3 = value; }
         public int EmptyRowsTotal { get => emptyRowsTotal; set => emptyRowsTotal = value; }
-        public int ColumnsTotal { get => columnsTotal; set => columnsTotal = value; }
-        public int RowsTotal { get => rowsTotal; set => rowsTotal = value; }
-        public int AllSheetsRowsTotal { get => allSheetsRowsTotal; set => allSheetsRowsTotal = value; }
 
         public ExcelReader() { }
 
@@ -40,13 +34,9 @@ namespace Sharepoint_Mailing.model
             FileName = filePath.Substring(filePath.LastIndexOf("\\")+1);
             app = new Excel.Application();
             app.DisplayAlerts = false;
-            workbook = app.Workbooks.Open(filePath);
+            workbook = app.Workbooks.Open(filePath, false, true); //open in read only
             emptyRowsTotal = 0;
-            allSheetsRowsTotal = 0;
-            allSheetsRowsTotal += workbook.Sheets["SE16N_LOG"].Cells.SpecialCells(Excel.XlCellType.xlCellTypeLastCell, Type.Missing).Row;
-            allSheetsRowsTotal += workbook.Sheets["SM20"].Cells.SpecialCells(Excel.XlCellType.xlCellTypeLastCell, Type.Missing).Row;
-            allSheetsRowsTotal += workbook.Sheets["CDHDR_CDPOS"].Cells.SpecialCells(Excel.XlCellType.xlCellTypeLastCell, Type.Missing).Row;
-            allSheetsRowsTotal += workbook.Sheets["DBTABLOG"].Cells.SpecialCells(Excel.XlCellType.xlCellTypeLastCell, Type.Missing).Row;
+            System.Threading.Thread.Sleep(1000);
         }
 
         //otwiera arkusz o podanym tytule
@@ -54,9 +44,6 @@ namespace Sharepoint_Mailing.model
         {
             SheetName = sheet;
             worksheet = workbook.Sheets[sheet];
-            Excel.Range last = worksheet.Cells.SpecialCells(Excel.XlCellType.xlCellTypeLastCell, Type.Missing);
-            ColumnsTotal = last.Column;
-            RowsTotal = last.Row;
         }
 
         //zamyka plik excelowy
