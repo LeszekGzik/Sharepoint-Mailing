@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sharepoint_Mailing.model
 {
+    //klasa przechowująca pojedynczy wiersz do wpisania do raportu
     public class ReportRow
     {
         int incidentNumber;
@@ -72,6 +73,7 @@ namespace Sharepoint_Mailing.model
             TotalErrors = 0;
         }
 
+        //dodaje NUMBER do liczby błędów w danej kolumnie
         public void addToColumn(int number, String column)
         {
             switch(column)

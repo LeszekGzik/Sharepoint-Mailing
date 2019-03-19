@@ -8,6 +8,7 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace Sharepoint_Mailing.model
 {
+    //klasa do wysyłania e-maili za pośrednictwem Outlooka
     class OutlookMailer
     {
         Outlook.Application app;
@@ -17,6 +18,7 @@ namespace Sharepoint_Mailing.model
             app = new Outlook.Application();
         }
 
+        //wysyła mail z podanym tematem, treścią i załącznikami do wszystkich użytkowników w userLiście
         public void sendToAll(String subject, UserList userList, String message, params String[] attachments)
         {
             Outlook.MailItem mailItem;
@@ -36,6 +38,8 @@ namespace Sharepoint_Mailing.model
             }
         }
 
+        //wysyła mail z podanym tematem i treścią pod wybrany adres
+        //(outdated)
         public void sendMail(String subject, String address, String message)
         {
             Outlook.MailItem mailItem = app.CreateItem(Outlook.OlItemType.olMailItem);
@@ -47,6 +51,7 @@ namespace Sharepoint_Mailing.model
             mailItem.Send();
         }
 
+        //wysyła mail z podanym tematem, treścią i załącznikami pod wybrany adres
         public void sendMail(String subject, String address, String message, params String[] attachments)
         {
             Outlook.MailItem mailItem = app.CreateItem(Outlook.OlItemType.olMailItem);

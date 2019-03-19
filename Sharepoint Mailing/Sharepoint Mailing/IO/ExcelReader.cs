@@ -8,6 +8,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Sharepoint_Mailing.model
 {
+    //klasa służąca do czytania arkuszy excelowych i sprawdzania ich pod kątem niewypełnionych (błędnych) wierszy
     public class ExcelReader
     {
         String sheetName;
@@ -16,29 +17,22 @@ namespace Sharepoint_Mailing.model
         protected Excel.Workbook workbook;
         protected Excel._Worksheet worksheet;
         private int rowsTotal;
-        private int emptyRowsTotal;
-
-        Dictionary<String, int> errorList1, errorList2, errorList3;
 
         public string SheetName { get => sheetName; set => sheetName = value; }
         public string FileName { get => fileName; set => fileName = value; }
-        public Dictionary<string, int> ErrorList1 { get => errorList1; set => errorList1 = value; }
-        public Dictionary<string, int> ErrorList2 { get => errorList2; set => errorList2 = value; }
-        public Dictionary<string, int> ErrorList3 { get => errorList3; set => errorList3 = value; }
-        public int EmptyRowsTotal { get => emptyRowsTotal; set => emptyRowsTotal = value; }
         public int RowsTotal { get => rowsTotal; set => rowsTotal = value; }
 
         public ExcelReader() { }
 
+        //konstruktor przyjmujący ścieżkę do pliku jako parametr
         public ExcelReader(String filePath)
         {
             this.filePath = filePath;
-            FileName = filePath.Substring(filePath.LastIndexOf("\\")+1);
-            app = new Excel.Application();
+            FileName = filePath.Substring(filePath.LastIndexOf("\\")+1);    //pozyskaj nazwę pliku ze ścieżki
+            app = new Excel.Application();                                  //otwórz Excela
             app.DisplayAlerts = false;
-            workbook = app.Workbooks.Open(filePath, false, true); //open in read only
-            emptyRowsTotal = 0;
-            System.Threading.Thread.Sleep(1000);
+            workbook = app.Workbooks.Open(filePath, false, true);           //otwórz plik jako read-only
+            System.Threading.Thread.Sleep(1000);                    //sekundowy wait stanowi zabezpieczenie przed błędnym odczytem pliku
         }
 
         //otwiera arkusz o podanym tytule
@@ -46,8 +40,7 @@ namespace Sharepoint_Mailing.model
         {
             SheetName = sheet;
             worksheet = workbook.Sheets[sheet];
-            //Excel.Range last = worksheet.Cells.SpecialCells(Excel.XlCellType.xlCellTypeLastCell, Type.Missing);
-            RowsTotal = worksheet.UsedRange.Rows.Count;
+            RowsTotal = worksheet.UsedRange.Rows.Count; //zapisz liczbę wierszy w arkuszu
         }
 
         //zamyka plik excelowy
@@ -56,19 +49,19 @@ namespace Sharepoint_Mailing.model
             workbook.Close();
         }
 
-        //wyszukuje wszystkie brakujące wartości, po czym wypełnia błędami 3 listy zawarte w readerze (errorList1, 2 i 3), odpowiednio dla kroków 1-3
+        //wyszukuje wszystkie brakujące wartości w aktualnej zakładce i tworzy na ich podstawie userListę
         public UserList findMissingCells()
         {
-
             UserList users = new UserList();
 
+            //odnajdywanie indeksów kolumn z poszukiwanymi wartościami
             Excel.Range range = worksheet.Cells.Find("Incident_Number");
             if(range==null)
             {
                 range = worksheet.Cells.Find("Incident Number");
             }
             int incidentColumn = range.Column;
-            int row = range.Row;
+            int row = range.Row;    //określenie wiersza z nagłówkami
 
             range = worksheet.Rows[row].Find("Comments");
             int commentsColumn = range.Column;
@@ -107,12 +100,12 @@ namespace Sharepoint_Mailing.model
             }
             int dateColumn = range.Column;
 
+            //pętla dla każdego wiersza, poczynając od wiersza pod nagłówkami, aż do końca arkusza
             for (int i = row + 1; i < RowsTotal; i++)
             {
                 bool error = false;
                 String column = "";
 
-                //step1
                 Excel.Range cell = worksheet.Cells[incidentColumn][i];
                 if (cell.Value == null || cell.Value.ToString().Equals(".") || cell.Value.ToString().Equals(""))
                 {
@@ -129,7 +122,6 @@ namespace Sharepoint_Mailing.model
                     }
                     else
                     {
-                        //step2
                         cell = worksheet.Cells[approverColumn][i];
                         if (cell.Value == null || cell.Value.ToString().Equals(".") || cell.Value.ToString().Equals(""))
                         {
@@ -146,7 +138,6 @@ namespace Sharepoint_Mailing.model
                             }
                             else
                             {
-                                //step3
                                 cell = worksheet.Cells[keyUserColumn][i];
                                 if (cell.Value == null || cell.Value.ToString().Equals(".") || cell.Value.ToString().Equals(""))
                                 {
@@ -167,17 +158,17 @@ namespace Sharepoint_Mailing.model
                     }
                 }
 
-                //tworzenie listy
+                //jeśli znalazłeś pustą komórkę:
                 if (error)
                 {
-                    cell = worksheet.Cells[userColumn][i];
+                    cell = worksheet.Cells[userColumn][i]; //odnajdź komórkę z nazwą użytkownika
                     if (cell.Value != null)
                     {
-                        String userName = cell.Value.ToString();
-                        cell = worksheet.Cells[dateColumn][i];
-                        String date = cell.Value.ToString();
-                        users.add(userName, "Consultant");
-                        users.addError(userName, fileName, sheetName, column, date);
+                        String userName = cell.Value.ToString();    //odczytaj nazwę użytkownika
+                        cell = worksheet.Cells[dateColumn][i];      //odszukaj komórkę z datą
+                        String date = cell.Value.ToString();        //odczytaj datę
+                        users.add(userName, "Consultant");          //dodaj usera do userlisty
+                        users.addError(userName, fileName, sheetName, column, date);    //dodaj błąd do usera
                     }
                 }
             }

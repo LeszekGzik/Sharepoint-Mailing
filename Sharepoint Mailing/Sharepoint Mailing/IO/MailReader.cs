@@ -8,6 +8,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Sharepoint_Mailing.model
 {
+    //odczytuje listę mailingową (imiona i nazwiska, adresy, stream liderzy) z pliku Excelowego
     public class MailReader
     {
         protected String filePath, fileName;
@@ -17,6 +18,7 @@ namespace Sharepoint_Mailing.model
 
         public string FileName { get => fileName; set => fileName = value; }
 
+        //konstruktor przyjmujący ścieżkę do pliku jako parametr
         public MailReader(String filePath)
         {
             this.filePath = filePath;
@@ -26,12 +28,13 @@ namespace Sharepoint_Mailing.model
             worksheet = workbook.Sheets[1];
         }
 
-        //zamyka plik excelowy
+        //zamyka plik
         public void close()
         {
             workbook.Close();
         }
 
+        //odnajduje podanego usera w pliku i zwraca jego pełne imię i nazwisko
         public String getFullName(String userName)
         {
             Excel.Range userColumn = worksheet.Columns[1];
@@ -39,6 +42,7 @@ namespace Sharepoint_Mailing.model
             return worksheet.Cells[2][row].Value.ToString();
         }
 
+        //odnajduje podanego usera w pliku i zwraca jego adres
         public String getAddress(String userName)
         {
             Excel.Range userColumn = worksheet.Columns[1];
@@ -46,6 +50,7 @@ namespace Sharepoint_Mailing.model
             return worksheet.Cells[3][row].Value.ToString();
         }
 
+        //odnajduje podanego usera w pliku i zwraca jego stream
         public String getStream(String userName)
         {
             Excel.Range userColumn = worksheet.Columns[1];
@@ -53,6 +58,7 @@ namespace Sharepoint_Mailing.model
             return worksheet.Cells[4][row].Value.ToString();
         }
 
+        //odnajduje podanego usera w pliku i zwraca jego lidera
         public String getLeadName(String userName)
         {
             Excel.Range userColumn = worksheet.Columns[1];
@@ -60,6 +66,7 @@ namespace Sharepoint_Mailing.model
             return worksheet.Cells[5][row].Value.ToString();
         }
 
+        //odnajduje podanego usera w pliku i zwraca adres jego lidera
         public String getLeadAddress(String userName)
         {
             Excel.Range userColumn = worksheet.Columns[1];

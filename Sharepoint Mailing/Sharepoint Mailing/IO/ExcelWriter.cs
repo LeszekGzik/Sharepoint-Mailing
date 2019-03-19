@@ -10,6 +10,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace Sharepoint_Mailing.IO
 {
+    //klasa do tworzenia raportów w Excelu
     public class ExcelWriter
     {
         public String fileName;
@@ -20,6 +21,8 @@ namespace Sharepoint_Mailing.IO
 
         public int Row { get => row; set => row = value; }
 
+        //konstruktor tworzący nowy plik
+        //outdated
         public ExcelWriter(String filePath)
         {
             this.fileName = filePath;
@@ -29,17 +32,19 @@ namespace Sharepoint_Mailing.IO
             worksheet = workbook.Worksheets.Item[1];
         }
 
+        //kostruktor tworzący nowy plik na bazie szablonu
         public ExcelWriter(String templatePath, String filePath)
         {
             this.fileName = filePath;
-            File.Copy(templatePath, filePath, true);
-            app = new Excel.Application();
+            File.Copy(templatePath, filePath, true);    //skopiuj szablon do nowego pliku
+            app = new Excel.Application();              //otwórz Excela
             app.DisplayAlerts = false;
-            workbook = app.Workbooks.Open(fileName);
-            worksheet = workbook.Worksheets.Item[1];
-            Row = 3;
+            workbook = app.Workbooks.Open(fileName);    //otwórz nowoutworzony plik
+            worksheet = workbook.Worksheets.Item[1];    //ustaw się na pierwszy arkusz
+            Row = 3;                                    //ustaw się na trzeci wiersz (pod nagłówkami)
         }
 
+        //outdated
         public void writeHeaders()
         {
             //first row
@@ -67,12 +72,14 @@ namespace Sharepoint_Mailing.IO
             Row = 3;
         }
 
+        //zamyka excela i usuwa plik
         internal void delete()
         {
             app.Quit();
             File.Delete(fileName);
         }
 
+        //wpisuje (podany w argumencie) raport do pliku, poczynając od aktualnego wiersza
         public void writeReport(ReportRowsList list)
         {
             foreach(String key in list.getKeys())
@@ -98,6 +105,7 @@ namespace Sharepoint_Mailing.IO
             }
         }
 
+        //outdated
         public void writeErrors(User user)
         {
             foreach(String key in user.getErrorKeys())
@@ -137,6 +145,7 @@ namespace Sharepoint_Mailing.IO
             }
         }
 
+        //outdated
         public void writeErrors(UserList users)
         {
             foreach(String userName in users.getKeys())
@@ -145,13 +154,14 @@ namespace Sharepoint_Mailing.IO
             }
         }
 
+        //formatuje i zapisuje plik, a następnie zamyka Excela
         public void save()
         {
-            Excel.Range range = worksheet.Range[worksheet.Cells[4,1], worksheet.Cells[Row-1,16]];
+            Excel.Range range = worksheet.Range[worksheet.Cells[4,1], worksheet.Cells[Row-1,16]];   //zaznacz wszystkie wypełnione wiersze
             range.Borders.LineStyle = Excel.XlLineStyle.xlContinuous;
-            range.Borders.Weight = Excel.XlBorderWeight.xlThin;
-            workbook.SaveAs(fileName);
-            workbook.Close();
+            range.Borders.Weight = Excel.XlBorderWeight.xlThin;                     //dodaj obramowanie
+            workbook.SaveAs(fileName);  //zapisz
+            workbook.Close();           //zamknij plik
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sharepoint_Mailing.model
 {
+    //klasa przechowująca dane na temat jednego błędu (plik, zakładka, kolumna, data i liczba wystąpień)
     public class Error
     {
         String file;

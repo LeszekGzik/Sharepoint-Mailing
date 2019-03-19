@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sharepoint_Mailing.model
 {
+    //klasa przechowująca dane jednego użytkownika i jego listę błędów
     public class User
     {
         String name;
@@ -43,26 +44,31 @@ namespace Sharepoint_Mailing.model
             TotalRows = 0;
         }
 
+        //dodaje błąd do listy usera
         public void addError(String file, String tab, String column, String date)
         {
             Errors.addError(file, tab, column, date);
         }
 
+        //dodaje błąd do listy usera
         public void addError(Error error)
         {
             Errors.addError(error);
         }
 
+        //zwraca błąd z listy o podanym kluczu
         public Error getError(String key)
         {
             return Errors.get(key);
         }
 
+        //zwraca pełną listę kluczy z listy błędów
         public List<String> getErrorKeys()
         {
             return Errors.Items.Keys.ToList();
         }
 
+        //sumuje błędy z błędami innego użytkownika
         public void sumErrors(User anotherUser)
         {
             foreach(String key in anotherUser.getErrorKeys())
@@ -71,6 +77,7 @@ namespace Sharepoint_Mailing.model
             }
         }
 
+        //zwraca string zawierający spis wszystkich błędów dla danego usera
         internal string getErrorString()
         {
             String errorString = "";

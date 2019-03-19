@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sharepoint_Mailing.model
 {
+    //klasa przechowująca listę wielu użytkowników
     public class UserList
     {
         Dictionary<String,User> items;
@@ -22,6 +23,7 @@ namespace Sharepoint_Mailing.model
             return Items.Keys.ToList();
         }
 
+        //dodaje użytkownika o podanej nazwie do listy
         public void add(String name)
         {
             if (!Items.Keys.Contains(name)) {
@@ -31,6 +33,7 @@ namespace Sharepoint_Mailing.model
             }
         }
 
+        //dodaje użytkownika o podanej roli i nazwie do listy
         public void add(String name, String role)
         {
             if (!Items.Keys.Contains(name))
@@ -42,37 +45,42 @@ namespace Sharepoint_Mailing.model
             }
         }
 
+        //dodaje użytkownika do listy
         public void add(User user)
         {
             Items.Add(user.Name, user);
         }
 
+        //zwraca usera o podanej nazwie
         public User get(String name)
         {
             return Items[name];
         }
 
+        //dodaje błąd do użytkownika o podanej nazwie
         public void addError(String name, String file, String tab, String column, String date)
         {
             Items[name].addError(file, tab, column, date);
         }
 
+        //scala tą userlistę z inną userlistą
         public UserList sum(UserList anotherList)
         {
-            foreach(String anotherUserName in anotherList.Items.Keys)
+            foreach(String anotherUserName in anotherList.Items.Keys) //pętla dla każdego usera w drugiej liście
             {
                 if (Items.Keys.Contains(anotherUserName))
                 {
-                    get(anotherUserName).sumErrors(anotherList.get(anotherUserName));
+                    get(anotherUserName).sumErrors(anotherList.get(anotherUserName)); //jeśli ta lista zawiera już tego usera, dodaj do niego nowe błędy
                 }
                 else
                 {
-                    Items.Add(anotherUserName, anotherList.get(anotherUserName));
+                    Items.Add(anotherUserName, anotherList.get(anotherUserName));     //jeśli nie, dodaj usera do listy
                 }
             }
             return this;
         }
 
+        //zwraca string z błędami wszystkich użytkowników
         public String getErrorString()
         {
             String errorString = "";
@@ -85,11 +93,13 @@ namespace Sharepoint_Mailing.model
             return errorString;
         }
 
+        //zwraca string z błędami użytkownika o danej nazwie
         public String getErrorString(String userName)
         {
             return get(userName).getErrorString();
         }
 
+        //pobiera z mailreadera pełne imiona i nazwiska wszystkich userów
         public void getFullNames(MailReader reader)
         {
             foreach(String userName in Items.Keys)
@@ -98,6 +108,7 @@ namespace Sharepoint_Mailing.model
             }
         }
 
+        //pobiera z mailreadera adresy, streamy i dane liderów dla wszystkich userów
         public void getAddresses(MailReader reader)
         {
             foreach (String userName in Items.Keys)
@@ -109,6 +120,7 @@ namespace Sharepoint_Mailing.model
             }
         }
 
+        //zwraca true jeśli userlista zawiera użytkownika o danej nazwie
         public Boolean contains(String fullName)
         {
             foreach(String userName in Items.Keys)

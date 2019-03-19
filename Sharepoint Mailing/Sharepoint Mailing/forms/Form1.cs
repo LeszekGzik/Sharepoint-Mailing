@@ -21,6 +21,7 @@ namespace Sharepoint_Mailing
         OutlookMailer outlookMailer;
         int sumOfFiles, sumOfTabs, doneFiles, doneTabs;
 
+        //inicjalizacja zmiennych
         public Form1()
         {
             InitializeComponent();
@@ -33,7 +34,6 @@ namespace Sharepoint_Mailing
         {
             setUpStatusStrip();
             backgroundWorker1.RunWorkerAsync(argument: false);
-
         }
 
         private void buttonOpenFile_Click(object sender, EventArgs e)
@@ -45,26 +45,26 @@ namespace Sharepoint_Mailing
             }
         }
 
-        //wypełnia dataGridView plikami w wybranym folderze
+        //wypełnia tabelę plikami z wybranego folderu
         private void showFiles()
         {
-            DirectoryInfo dir = new DirectoryInfo(textBoxFilePath.Text);
-            FileInfo[] files = dir.GetFiles("*.xls*", SearchOption.AllDirectories);
-            dataGridView1.Rows.Clear();
+            DirectoryInfo dir = new DirectoryInfo(textBoxFilePath.Text);            //odczytaj folder
+            FileInfo[] files = dir.GetFiles("*.xls*", SearchOption.AllDirectories); //wczytaj listę plików w folderze
+            dataGridView1.Rows.Clear();                                             //wyczyść zawartość datagrida
             foreach (FileInfo file in files)
             {
-                dataGridView1.Rows.Add(file.FullName.Replace(textBoxFilePath.Text+"\\",""));
+                dataGridView1.Rows.Add(file.FullName.Replace(textBoxFilePath.Text+"\\","")); //w pętli dodaj wiersze do datagrida
             }
         }
         
-        //outdated
+        //dokonuje sprawdzenia wybranych plików i rozsyła maile do wszystkich użytkowników którzy mają co najmniej 1 niewypełniony wiersz
         private void buttonCheckAndRemind_Click(object sender, EventArgs e)
         {
             setUpStatusStrip();
             backgroundWorker1.RunWorkerAsync(argument: true);
         }
 
-        //przeprowadza sprawdzenie wszystkich zakładek w pliku; zwraca listę wszystkich błędów + podsumowanie w postaci stringa
+        //przeprowadza sprawdzenie wszystkich zakładek w pliku; zwraca userlist ze wszystkimi użytkownikami którzy mają niewypełnione wiersze
         public UserList runCheckOnFile(String filePath)
         {
             Console.WriteLine("File check starting: " + filePath + "...");
@@ -84,7 +84,7 @@ namespace Sharepoint_Mailing
             return users;
         }
 
-        //wykonuje pełne sprawdzenie jednej zakładki w obecnym pliku w ExcelReaderze; zwraca listę wszystkich błędów w postaci stringa
+        //wykonuje pełne sprawdzenie jednej zakładki w obecnym pliku w ExcelReaderze; zwraca userlist ze wszystkimi użytkownikami którzy mają niewypełnione wiersze
         public UserList runCheckOnTab(String tab)
         {
             Console.WriteLine("   Tab check starting: " + tab + "...");
@@ -92,7 +92,7 @@ namespace Sharepoint_Mailing
             UserList userList = excelReader.findMissingCells();
             Console.WriteLine("   Tab check finished: " + tab);
             doneTabs++;
-            backgroundWorker1.ReportProgress((int)((double)doneTabs / (double)sumOfTabs * 100));
+            backgroundWorker1.ReportProgress((int)((double)doneTabs / (double)sumOfTabs * 100));    //aktualizuj progress
 
             return userList;
         }
@@ -156,6 +156,7 @@ namespace Sharepoint_Mailing
             }
         }
 
+        //przy zamknięciu formatki zapisuje konfigurację do config.xml
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             saveConfig();
@@ -190,11 +191,14 @@ namespace Sharepoint_Mailing
             doc.Save("config.xml");
         }
 
+        //uruchamia sprawdzanie podanych plików w osobnym wątku (w tle)
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            Boolean remind = (Boolean)e.Argument;
+            Boolean remind = (Boolean)e.Argument; //odczytaj podany argument (true = check+remind, false = check) i zapisz do zmiennej
             mailReader = new MailReader(textBoxEmailPath.Text);
-            UserList userList = new UserList();
+            UserList userList = new UserList();     //zainicjuj userlistę
+
+            //sprawdź każdy wiersz, jeśli checkbox jest zaznaczony, sprawdź dany plik i dodaj wyniki do userlisty
             foreach (DataGridViewRow row in dataGridView1.Rows)
             {
                 DataGridViewCheckBoxCell chk = (DataGridViewCheckBoxCell)row.Cells[1];
@@ -203,10 +207,13 @@ namespace Sharepoint_Mailing
                     userList.sum(runCheckOnFile(textBoxFilePath.Text + "\\" + row.Cells[0].Value.ToString()));
                 }
             }
+
+            //wyciąganie danych użytkowników (imię/nazwisko/e-mail) z pliku z adresami
             userList.getFullNames(mailReader);
             userList.getAddresses(mailReader);
             String errorString = userList.getErrorString();
 
+            //utwórz raport i zapisz go w folderze Reports pod nazwą "yyyy-MM-dd hh-mm-ss.xls"
             String temp = Environment.CurrentDirectory + "\\Reports\\" + DateTime.Now.ToString("yyyy-MM-dd hh-mm-ss") + ".xlsx";
             String template = Environment.CurrentDirectory + "/ZSOX report template.xlsx";
             ExcelWriter writer = new ExcelWriter(template, temp);
@@ -220,23 +227,23 @@ namespace Sharepoint_Mailing
                 outlookMailer.sendToAll("ZSOX Sharepoint check results from day " + DateTime.Now.ToShortDateString(), userList, "Please find attached the report.", temp);
             }
 
-
             if (checkBoxMail.Checked)
             {
                 //raport zbiorczy do kontrolera
                 outlookMailer.sendMail("ZSOX Sharepoint check results from day " + DateTime.Now.ToShortDateString(), textBoxControllerEmail.Text, "Please find attached the report.", temp);
-                writer.delete();
             }
 
             mailReader.close();
             MessageBox.Show(errorString);
         }
 
+        //aktualizuje progress po każdym skończonym sprawdzeniu zakładki
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             updateStatusStrip();
         }
 
+        //dokonuje wstępnego ustawienia StatusStripa
         private void setUpStatusStrip()
         {
             sumOfFiles = 0;
@@ -248,22 +255,24 @@ namespace Sharepoint_Mailing
                 DataGridViewCheckBoxCell chk = (DataGridViewCheckBoxCell)row.Cells[1];
                 if (chk.Value == chk.TrueValue)
                 {
-                    sumOfFiles += 1;
-                    sumOfTabs += 4;
+                    sumOfFiles += 1;    //liczba plików do zrobienia = liczba zaznaczonych checkboxów w tabeli
+                    sumOfTabs += 4;     //liczba zakładek do zrobienia = liczba plików * 4
                 }
             }
-            progressBar1.Maximum = sumOfTabs;
-            progressBar1.Value = 0;
+            progressBar1.Maximum = sumOfTabs;   //ustaw maksimum na pasku postępu
+            progressBar1.Value = 0;             //ustaw początkową wartość na pasku postępu (0)
             progressBar1.Step = 1;
             updateLabels();
         }
 
+        //aktualizuje StatusStrip 
         private void updateStatusStrip()
         {
             updateLabels();
             progressBar1.PerformStep();
         }
 
+        //aktualizuje tekst na StatusStripie
         private void updateLabels()
         {
             statusLabelFiles.Text = "Files done: " + doneFiles + "/" + sumOfFiles;
